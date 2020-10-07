@@ -1,2 +1,3 @@
-# spideog
-visualise kraken2 and bracken outputs in a terminal 
+# 🐦 spideog
+
+terminal kraken2 and bracken outputs visualiser
