@@ -1,0 +1,10 @@
+- [ ] Parse Kraken report files
+- [ ] Parse Bracken report files
+- [ ] Display data from both files
+- [ ] Parse sample_data file to group samples together
+- [ ] Add filter options
+    - [ ] taxa level
+    - [ ] read count
+    - [ ] etc.
+- [ ] Compute other stats from it
+- [ ] Compare samples
