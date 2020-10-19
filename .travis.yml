@@ -1,10 +1,11 @@
 # Based on the "trust" template v0.1.2
 # https://github.com/japaric/trust/tree/v0.1.2
 
-dist: trusty
+os: linux
+dist: xenial
 language: rust
 services: docker
-sudo: required
+# sudo: required
 
 env:
   global:
@@ -13,7 +14,7 @@ env:
 GH_TOKEN: &GH_TOKEN
   secure: YOUR_API_KEY_ENCRYPTED
 
-matrix:
+jobs:
   # TODO These are all the build jobs. Adjust as necessary. Comment out what you
   # don't need
   include:
@@ -105,7 +106,7 @@ deploy:
     condition: $TRAVIS_RUST_VERSION = stable
     tags: true
   provider: releases
-  skip_cleanup: true
+  cleanup: true
 
 cache: cargo
 before_cache:
