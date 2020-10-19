@@ -21,22 +21,22 @@ mod tests {
     // use indextree::Arena;
     use std::collections::BTreeMap;
 
-    #[test]
-    fn bracken_works() {
-        let mut rdr = csv::ReaderBuilder::new()
-            .has_headers(true)
-            .delimiter(b'\t')
-            .from_path(r"C:\Users\Jean\Documents\spideog\_test_data\Sam9_species.bracken")
-            .unwrap();
-        // dbg!(rdr);
+    // #[test]
+    // fn bracken_works() {
+    //     let mut rdr = csv::ReaderBuilder::new()
+    //         .has_headers(true)
+    //         .delimiter(b'\t')
+    //         .from_path(r"C:\Users\Jean\Documents\spideog\_test_data\Sam9_species.bracken")
+    //         .unwrap();
+    //     // dbg!(rdr);
 
-        let mut bracken = BTreeMap::new();
+    //     let mut bracken = BTreeMap::new();
 
-        for result in rdr.deserialize() {
-            let record: BrackenRecord = result.unwrap();
-            bracken.insert(record.organism, record.abundance_values);
-        }
+    //     for result in rdr.deserialize() {
+    //         let record: BrackenRecord = result.unwrap();
+    //         bracken.insert(record.organism, record.abundance_values);
+    //     }
 
-        println!("{:?}", bracken);
-    }
+    //     println!("{:?}", bracken);
+    // }
 }

@@ -61,7 +61,7 @@ before_deploy:
 
 deploy:
   token:
-    secure: YOUR_API_KEY_ENCRYPTED
+    secure: oXqz1swVAHuDrcFKAeoJfIk3BQ0MpYFQeWGenL2zZvobwAeQa3maxHavOQ+9F2POi3BTjGKXKZft00l/7VpQmVCI+w6t4zlDJrXLVvDH4vJakys8nFdfX9DtIRrgkseMBBskf14nKd54KK/9olNKzg+bYryx/SfYvnDtfPCfOVBpYgLM3yKmQNTX8uqKuqhNMhezRndGpgGWoM/zEtoYy8PeMFFoVe50SWOVY93IvFBfIE8AEIEqhBMTRd8bmlOHmi0Xncdu7evZgpolxNzxqfH+lIsWryFie+Jloj7oi/DvstaTS6HhRP65lFR21N5qf1sg+VfWUtd3P5NDNpbQ20W35FKPwhbJvYSnUolhklbxy3w5MxXcnSLXpBCXJsoznEYTONKC90eTissebTDKlwBGSnJ+CzyEyCBu7gltZHuBQVSx/9amNgQk+mYbsxHgKGZ8R+YTV04YxyI+XwAClKkjF9NeLItlSEXWQfV7d1bibiwalj2jP45+Xe/2NorEe0gbMI+qV66oUOoNoJpWQD7ydhHjb/oXdnGzvFJcadH8eF6TfVLIrK77HOHExM6P+a4verEJPW5uC1TKS6NsLRPTpT1fv0qhj4SLy56JK8zIh31L01Z6bWIyRDU4Ke07aEjHx+AzH5tBJVznTXBiIZyGZy0f0+JCBSqMk+XhjsA=
   file_glob: true
   file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
   on:
