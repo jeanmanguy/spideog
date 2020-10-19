@@ -1,5 +1,9 @@
 # 🐦 spideog
 
+[![Build Status](https://travis-ci.com/jeanmanguy/spideog.svg?branch=main)](https://travis-ci.com/jeanmanguy/spideog)
+[![Rust](https://github.com/jeanmanguy/spideog/workflows/Rust/badge.svg?branch=main)](https://github.com/jeanmanguy/spideog/actions?query=workflow%3ARust)
+
+
 Command line utility for Kraken2 reports.
 
 ## Installation
