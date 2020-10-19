@@ -5,35 +5,13 @@ os: linux
 dist: xenial
 language: rust
 services: docker
-# sudo: required
 
 env:
   global:
     - CRATE_NAME=spideog
 
 jobs:
-  # TODO These are all the build jobs. Adjust as necessary. Comment out what you
-  # don't need
   include:
-    # Android
-    # - env: TARGET=aarch64-linux-android DISABLE_TESTS=1
-    # - env: TARGET=arm-linux-androideabi DISABLE_TESTS=1
-    # - env: TARGET=armv7-linux-androideabi DISABLE_TESTS=1
-    # - env: TARGET=i686-linux-android DISABLE_TESTS=1
-    # - env: TARGET=x86_64-linux-android DISABLE_TESTS=1
-
-    # iOS
-    # - env: TARGET=aarch64-apple-ios DISABLE_TESTS=1
-    #   os: osx
-    # - env: TARGET=armv7-apple-ios DISABLE_TESTS=1
-    #   os: osx
-    # - env: TARGET=armv7s-apple-ios DISABLE_TESTS=1
-    #   os: osx
-    # - env: TARGET=i386-apple-ios DISABLE_TESTS=1
-    #   os: osx
-    # - env: TARGET=x86_64-apple-ios DISABLE_TESTS=1
-    #   os: osx
-
     # Linux
     # - env: TARGET=aarch64-unknown-linux-gnu
     # - env: TARGET=arm-unknown-linux-gnueabi
@@ -64,20 +42,6 @@ jobs:
 
     # Windows
     - env: TARGET=x86_64-pc-windows-gnu
-
-    # Bare metal
-    # These targets don't support std and as such are likely not suitable for
-    # most crates.
-    # - env: TARGET=thumbv6m-none-eabi
-    # - env: TARGET=thumbv7em-none-eabi
-    # - env: TARGET=thumbv7em-none-eabihf
-    # - env: TARGET=thumbv7m-none-eabi
-    # Testing other channels
-    # - env: TARGET=x86_64-unknown-linux-gnu
-    #   rust: nightly
-    # - env: TARGET=x86_64-apple-darwin
-    #   os: osx
-    #   rust: nightly
 
 before_install:
   - set -e
@@ -114,9 +78,9 @@ before_cache:
 branches:
   only:
     # release tags
-    # - /^v\d+\.\d+\.\d+.*$/
+    - /^v\d+\.\d+\.\d+.*$/
     - main
 
 notifications:
   email:
-    on_success: never
+    on_success: always
