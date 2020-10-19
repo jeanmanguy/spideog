@@ -1,10 +1,28 @@
 - [ ] Parse Kraken report files
-- [ ] Parse Bracken report files
+    - [ ] tree data structure
+- [X] Parse Bracken report files
 - [ ] Display data from both files
 - [ ] Parse sample_data file to group samples together
+    - [ ] standard file for experiment
 - [ ] Add filter options
     - [ ] taxa level
     - [ ] read count
     - [ ] etc.
 - [ ] Compute other stats from it
 - [ ] Compare samples
+- [ ] export tree and data to newick file 
+    - [ ] and other formats http://yulab-smu.top/treedata-book/chapter1.html
+- [ ] instead of concatenating trees from the brack/kraken file, use external phylogenetic tree (revamp indent as distance, use )
+
+Exmaple data from Bracken repository
+
+- original kraken report https://github.com/jenniferlu717/Bracken/blob/master/sample_data/sample_test.report
+- bracken kraken report @ species level https://github.com/jenniferlu717/Bracken/blob/master/sample_data/sample_output_bracken.report
+- bracken abundance @ species level https://github.com/jenniferlu717/Bracken/blob/master/sample_data/sample_output_species_abundance.txt
+
+
+competition
+
+- pavian
+- taxonomer https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-0969-1
+- seed https://academic.oup.com/bioinformatics/article/31/4/602/2748237 (ECO, no tree)
