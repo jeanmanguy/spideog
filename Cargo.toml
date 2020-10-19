@@ -1,10 +1,16 @@
 [package]
 name = "spideog"
 version = "0.1.0"
-authors = ["Jean Manguy <jean.manguy@gmail.com>"]
+authors = ["Jean Manguy <jean@manguy.eu>"]
 edition = "2018"
 description = "Command line utility to visualize and analyze metagenomics classification from Kraken and Bracken"
 publish = false
+readme = "README.md"
+repository = "https://github.com/jeanmanguy/spideog"
+documentation = "https://github.com/jeanmanguy/spideog/blob/main/README.md"
+keywords = ["cli", "bioinformatics", "metagenomics"]
+categories = ["command-line-utilities", "science"]
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -15,7 +21,7 @@ csv = "1"
 color-eyre = { version = "0.5", default-features = false, features = ["issue-url", "track-caller", "capture-spantrace"] }
 clap = { version = "~3.0.0-beta.1", default-features = false, features = [ "wrap_help", "derive", "suggestions", "color", "std" ] }
 clap_generate = "3.0.0-beta.1"
-nom = { version = "5.1", features = ["regexp"]}
+nom = { version = "5.1", features = ["regexp"]} # do I need regexp?
 daggy = "0.7"
 petgraph = "0.5"
 log = "0.4"
@@ -40,3 +46,30 @@ lto = true
 panic = "unwind"
 codegen-units = 1
 
+[[package.metadata.release.pre-release-replacements]]
+file = "CHANGELOG.md"
+search = "Unreleased"
+replace="{{version}}"
+
+[[package.metadata.release.pre-release-replacements]]
+file = "CHANGELOG.md"
+search = "\\.\\.\\.HEAD"
+replace="...{{tag_name}}"
+exactly = 1
+
+[[package.metadata.release.pre-release-replacements]]
+file = "CHANGELOG.md"
+search = "ReleaseDate"
+replace="{{date}}"
+
+[[package.metadata.release.pre-release-replacements]]
+file="CHANGELOG.md"
+search="<!-- next-header -->"
+replace="<!-- next-header -->\n\n## [Unreleased] - ReleaseDate"
+exactly=1
+
+[[package.metadata.release.pre-release-replacements]]
+file="CHANGELOG.md"
+search="<!-- next-url -->"
+replace="<!-- next-url -->\n[Unreleased]: https://github.com/jeanmanguy/{{crate_name}}/compare/{{tag_name}}...HEAD"
+exactly=1
