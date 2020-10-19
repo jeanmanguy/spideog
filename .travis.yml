@@ -1,0 +1,50 @@
+language: rust
+sudo: false
+
+# Cache `cargo install`ed tools, but don't cache the project's `target`
+# directory (which ends up over-caching and filling all disk space!)
+cache:
+  directories:
+    - /home/travis/.cargo
+
+GH_TOKEN: &GH_TOKEN
+  secure: YOUR_API_KEY_ENCRYPTED
+
+DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
+  before_deploy:
+    - git config --local user.name "Jean Manguy"
+    - git config --local user.email "jean@manguy.eu"
+    - name="spideog-$TRAVIS_TAG-$TARGET"
+    - mkdir $name
+    - cp target/$TARGET/release/spideog $name/
+    - cp README.md LICENSE-MIT LICENSE-APACHE $name/
+    - tar czvf $name.tar.gz $name
+  deploy:
+    provider: releases
+    api_key: *GH_TOKEN
+    file: spideog-$TRAVIS_TAG-$TARGET.tar.gz
+    skip_cleanup: true
+    on:
+      branch: master
+      tags: true
+
+matrix:
+  include:
+    - name: Linux Binary
+      env: TARGET=x86_64-unknown-linux-musl
+      rust: stable
+      before_script: rustup target add $TARGET
+      script: cargo build --release --target $TARGET --locked
+      addons:
+        apt:
+          packages:
+            - musl-tools
+      <<: *DEPLOY_TO_GITHUB
+
+    - name: macOS Binary
+      env: MACOSX_DEPLOYMENT_TARGET=10.7 TARGET=x86_64-apple-darwin
+      os: osx
+      rust: stable
+      script: cargo build --release --target $TARGET --locked
+      install: true
+      <<: *DEPLOY_TO_GITHUB
