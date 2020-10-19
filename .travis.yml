@@ -11,9 +11,6 @@ env:
   global:
     - CRATE_NAME=spideog
 
-GH_TOKEN: &GH_TOKEN
-  secure: YOUR_API_KEY_ENCRYPTED
-
 jobs:
   # TODO These are all the build jobs. Adjust as necessary. Comment out what you
   # don't need
@@ -99,7 +96,8 @@ before_deploy:
   - sh ci/before_deploy.sh
 
 deploy:
-  api_key: *GH_TOKEN
+  api_key:
+    secure: YOUR_API_KEY_ENCRYPTED
   file_glob: true
   file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
   on:
