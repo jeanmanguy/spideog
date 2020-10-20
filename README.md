@@ -42,3 +42,7 @@ Apache License (Version 2.0).
 
 See [LICENSE-APACHE](./LICENSE-APACHE) and [LICENSE-MIT](./LICENSE-MIT) for
 details.
+
+## Cover picture
+
+Credit: [Robin CC BY Greg Clarke](https://www.flickr.com/photos/leppre/25468458218)
