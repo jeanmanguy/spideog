@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - continous integration builds for linux, osx, and windows
 
+### Modified
+
+- bugfix: quotes and round brackets were added to the list of characters to escape in taxon name
+
 ## [0.1.0] - 2020-10-19
 
 ### Added
