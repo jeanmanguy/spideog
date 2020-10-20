@@ -1,14 +1,21 @@
 # 🐦 spideog
 
+![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)
+![lastest version](https://img.shields.io/github/v/release/jeanmanguy/spideog)
+
 [![Build Status](https://travis-ci.com/jeanmanguy/spideog.svg?branch=main)](https://travis-ci.com/jeanmanguy/spideog)
 [![Rust](https://github.com/jeanmanguy/spideog/workflows/Rust/badge.svg?branch=main)](https://github.com/jeanmanguy/spideog/actions?query=workflow%3ARust)
 
-
 Command line utility for Kraken2 reports.
+
+Supports reports from [Kraken2](https://github.com/DerrickWood/kraken2) or from [Bracken](https://github.com/jenniferlu717/Bracken).
+
+This is a work in progress. The commands may change between released versions, please read the [CHANGELOG](CHANGELOG).
 
 ## Installation
 
-TBD
+Binaries for Linux, OSX, and Windows are available in the [Github release page](https://github.com/jeanmanguy/spideog/releases). No dependencies are required.
+
 
 ## Usage
 
@@ -30,10 +37,16 @@ The following command will generate the files `sample_1.tree` and `sample_2.tree
 spideog tree sample_1.kreport sample_2.kreport
 ```
 
-#### Options for the output files
+#### Options 
 
-- `--overwrite` 
-- `--prefix` 
+- `--has_headers` necessary if the reports has headers
+- `--overwrite` force overwriting if the output file already exist
+- `--prefix` prepend the prefix to the name of the output file
+
+
+## Contributing
+
+Please submit a bug report or a feature request [on the Github issues page](https://github.com/jeanmanguy/spideog/issues/new/choose).
 
 ## License
 
