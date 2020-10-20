@@ -9,6 +9,7 @@ services: docker
 env:
   global:
     - CRATE_NAME=spideog
+    - secure: B39IuyC3UCdPlx6jq7xMB1aVOQiXUQry+0TbgR6CB18Yip9gGVRSkeIRGHnl38t6OkTGQ52U4nWRSigKOkXCJmzPirRgyC28TPGG/O7/SJlSFkhRv83w+9BfyjXyZAuRAaSdjTCxLcvJIMdrgos+r1C8TBEVnbVtg9dVDJEzIo2zvEIbxtOuCALRai7sL595oD5csrQtwR9sJgf4FsfZQRYSeIEvNgDUIEkUsu/38Xkx43ekgLOaGVwJ5qFAzaHY1LAdU5ilV+tHX4k7GBvM4oRFA1on2kBhRBtLj2XW3CFMBJe2kHi3fktMCeHxvZCDDpvs3q0rpj7ddk4kVxhihfY6Wa9KvrsZAbyJptiEDz4piB/xjMA1oGyllNpfI7+0E3Toj1Etmk5NqPt+Iumq6OHw0DQeqlUQZuaXYa1hJX5lxqEO36/YBouP907PrceKWoKEoHlbVZXOBLhy0WZqCmGGUl7QweNXqQ2Va0Ypmv5AbLvlYokop56WzcDlQswcKNJeAMOnOpEH0h5BUg4fmnpFyztL7M04U+JKOk4tFwZ2IbDILhm4zJGTzJaaE8yyUt3XPh4wxsVcftFj22eB+OF03jUmzZdb9raur5zgChwlR95Bs6YrFd2DFkiFk0hirs6AwFMMIAuDN4MhTF1EyGSq8QTObsMjIBGL5RexBhE=
 
 jobs:
   include:
@@ -61,8 +62,8 @@ before_deploy:
 
 deploy:
   - provider: releases
-    api_key:
-      secure: oXqz1swVAHuDrcFKAeoJfIk3BQ0MpYFQeWGenL2zZvobwAeQa3maxHavOQ+9F2POi3BTjGKXKZft00l/7VpQmVCI+w6t4zlDJrXLVvDH4vJakys8nFdfX9DtIRrgkseMBBskf14nKd54KK/9olNKzg+bYryx/SfYvnDtfPCfOVBpYgLM3yKmQNTX8uqKuqhNMhezRndGpgGWoM/zEtoYy8PeMFFoVe50SWOVY93IvFBfIE8AEIEqhBMTRd8bmlOHmi0Xncdu7evZgpolxNzxqfH+lIsWryFie+Jloj7oi/DvstaTS6HhRP65lFR21N5qf1sg+VfWUtd3P5NDNpbQ20W35FKPwhbJvYSnUolhklbxy3w5MxXcnSLXpBCXJsoznEYTONKC90eTissebTDKlwBGSnJ+CzyEyCBu7gltZHuBQVSx/9amNgQk+mYbsxHgKGZ8R+YTV04YxyI+XwAClKkjF9NeLItlSEXWQfV7d1bibiwalj2jP45+Xe/2NorEe0gbMI+qV66oUOoNoJpWQD7ydhHjb/oXdnGzvFJcadH8eF6TfVLIrK77HOHExM6P+a4verEJPW5uC1TKS6NsLRPTpT1fv0qhj4SLy56JK8zIh31L01Z6bWIyRDU4Ke07aEjHx+AzH5tBJVznTXBiIZyGZy0f0+JCBSqMk+XhjsA=
+    api_key: $GITHUB_TOKEN
+
     file_glob: true
     file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
     on:
