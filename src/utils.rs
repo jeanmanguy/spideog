@@ -25,6 +25,10 @@ pub fn clean_name<'a, S: Into<Cow<'a, str>>>(input: S) -> Cow<'a, str> {
                 ',' => {}
                 '[' => {}
                 ']' => {}
+                '(' => {}
+                ')' => {}
+                '\'' => {}
+                '\"' => {}
                 _ => output.push(c),
             }
         }
