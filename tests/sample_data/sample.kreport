@@ -1,0 +1,49 @@
+33.64	180	180	U	0	unclassified
+66.36	355	0	R	1	root
+66.36	355	0	R1	131567	  cellular organisms
+41.5	222	0	R2	2759	    Eukaryota
+33.64	180	0	K	33208	      Metazoa
+33.64	180	0	P	7711	        Chordata
+33.64	180	0	C	40674	          Mammalia
+33.64	180	0	C3	1437010	            Boreoeutheria
+9.35	50	0	C4	314146	              Euarchontoglires
+9.35	50	0	O	9443	                Primates
+9.35	50	0	F	9604	                  Hominidae
+9.35	50	0	G	9605	                    Homo
+9.35	50	50	S	9606	                      Homo sapiens
+24.3	130	0	C4	314145	              Laurasiatheria
+1.87	10	0	O	33554	                Carnivora
+1.87	10	0	F	9608	                  Canidae
+1.87	10	0	G	9611	                    Canis
+1.87	10	10	S	9612	                      Canis lupus
+22.43	120	0	O	91561	                Artiodactyla
+22.43	120	0	F	9726	                  Delphinidae
+22.43	120	0	G	9738	                    Tursiops
+22.43	120	120	S	9739	                      Tursiops truncatus
+7.85	42	0	K	4751	      Fungi
+7.85	42	0	P	4890	        Ascomycota
+7.85	42	0	C	4891	          Saccharomycetes
+7.85	42	0	O	4892	            Saccharomycetales
+7.85	42	0	F	4893	              Saccharomycetaceae
+7.85	42	0	G	4930	                Saccharomyces
+7.85	42	42	S	4932	                  Saccharomyces cerevisiae
+20.19	108	0	D	2	    Bacteria
+5.61	30	0	P	1224	      Proteobacteria
+5.61	30	0	C	1236	        Gammaproteobacteria
+5.61	30	0	O	91347	          Enterobacterales
+5.61	30	0	F	543	            Enterobacteriaceae
+5.61	30	0	G	561	              Escherichia
+5.61	30	30	S	562	                Escherichia coli
+14.58	78	0	P	1239	      Firmicutes 
+14.58	78	0	C	91061	        Bacilli
+14.58	78	0	O	186826	          Lactobacillales 
+14.58	78	0	F	1300	            Streptococcaceae
+14.58	78	0	G	1357	              Lactococcus
+14.58	78	78	S	1358	                Lactococcus lactis
+4.67	25	0	D	2157	    Archaea
+4.67	25	0	P	28889	      Crenarchaeota 
+4.67	25	0	C	183924	        Thermoprotei 
+4.67	25	0	O	2266	          Thermoproteales 
+4.67	25	0	F	2267	            Thermoproteaceae 
+4.67	25	0	G	2276	              Pyrobaculum 
+4.67	25	25	S	70771	                Pyrobaculum neutrophilum
