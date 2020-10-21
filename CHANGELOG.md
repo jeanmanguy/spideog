@@ -10,7 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added 
 
-- continous integration builds for linux, osx, and windows
+- dev: continous integration builds for linux, osx, and windows
+- documentation: example kraken report
+- documentation: links to downloads
 
 ### Modified
 
