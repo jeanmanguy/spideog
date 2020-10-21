@@ -1,15 +1,18 @@
+use crate::ErrorKind;
 use std::fmt::Display;
 
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Deserializer};
+use tracing::instrument;
 use std::sync::Mutex;
+
 
 static LAST_TAXONOMY_RANK_PARSED: Lazy<Mutex<Option<TaxonomyRank>>> =
     Lazy::new(|| Mutex::new(None));
 
 /// Taxonomy levels
 ///
-///
+/// the u32 offset represents sub-clade (e.g. parvorder, subfamily, etc.)
 #[derive(Clone, PartialEq, Debug, PartialOrd, Ord, Eq, Hash, Copy)]
 pub enum TaxonomyRank {
     Unclassified(u32),
@@ -42,29 +45,26 @@ impl Display for TaxonomyRank {
     }
 }
 
-pub fn parse_taxonomy_level<'de, D>(string: &str) -> Result<TaxonomyRank, D::Error>
-where
-    D: Deserializer<'de>,
-{
+#[instrument]
+pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
+    // TODO: add previous tax rank here, make it pure
     if string.len() > 2 {
-        return Err(serde::de::Error::invalid_length(string.len(), &"1 or 2"));
+        return Err(ErrorKind::TaxRankParsingInvalidLength(String::from(string), string.len()));
     }
 
     let mut string_chars = string.chars();
 
     let letter = string_chars.next().unwrap();
 
-    let mut offset = 0u32;
-    if let Some(number) = string_chars.next() {
+    let offset: u32 = if let Some(number) = string_chars.next() {
         if number.is_ascii_digit() {
-            offset = number.to_digit(10u32).unwrap();
+            number.to_digit(10u32).unwrap()
         } else {
-            return Err(serde::de::Error::invalid_value(
-                serde::de::Unexpected::Char(number),
-                &"a digit (0..9)",
-            ));
+            return Err(ErrorKind::TaxRankParsingOfffsetNotANumber(String::from(string), number))
         }
-    }
+    } else {
+        0_u32
+    };
 
     let tax_rank = match letter {
         'U' => Ok(TaxonomyRank::Unclassified(offset)),
@@ -92,16 +92,10 @@ where
                     TaxonomyRank::Species(i) => Ok(TaxonomyRank::Species(i + 1)),
                 }
             } else {
-                Err(serde::de::Error::invalid_value(
-                    serde::de::Unexpected::Char(letter),
-                    &"Cannot infer the taxonomy rank of `-`, no previous rank given",
-                ))
+                Err(ErrorKind::TaxRankParsingCannotInferRank(String::from(string)))
             }
         }
-        _ => Err(serde::de::Error::invalid_value(
-            serde::de::Unexpected::Char(letter),
-            &"R, D, K, P, C, O, F, G, S, U, or -",
-        )),
+        _ => Err(ErrorKind::TaxRankParsingInvalidRankCode(String::from(string), letter)),
     }?;
 
     let mut old_tax_rank = LAST_TAXONOMY_RANK_PARSED.lock().unwrap();
@@ -111,12 +105,14 @@ where
 }
 
 impl<'de> Deserialize<'de> for TaxonomyRank {
+
+    
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
-        let string = String::deserialize(deserializer)?;
-        parse_taxonomy_level::<D>(&string)
+        let string = String::deserialize(deserializer)?; 
+        parse_taxonomy_level(&string).map_err(serde::de::Error::custom)
     }
 
     fn deserialize_in_place<D>(deserializer: D, place: &mut Self) -> Result<(), D::Error>
@@ -131,11 +127,67 @@ impl<'de> Deserialize<'de> for TaxonomyRank {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+use super::*;
+use test_case::test_case;
+
 
     #[test]
     fn test_order_taxonomy() {
         assert!(TaxonomyRank::Domain(0) > TaxonomyRank::Root(1));
         assert!(TaxonomyRank::Domain(1) > TaxonomyRank::Domain(0))
     }
+
+    #[test_case("U", TaxonomyRank::Unclassified(0); "ok_U")]
+    #[test_case("U1", TaxonomyRank::Unclassified(1); "ok_U1")]
+    #[test_case("R", TaxonomyRank::Root(0); "ok_R")]
+    #[test_case("R1", TaxonomyRank::Root(1); "ok_R1")]
+    #[test_case("P", TaxonomyRank::Phylum(0); "ok_P")]
+    #[test_case("P1", TaxonomyRank::Phylum(1); "ok_P1")]
+    #[test_case("C", TaxonomyRank::Class(0); "ok_C")]
+    #[test_case("C1", TaxonomyRank::Class(1); "ok_C1")]
+    #[test_case("O", TaxonomyRank::Order(0); "ok_O")]
+    #[test_case("O1", TaxonomyRank::Order(1); "ok_O1")]
+    #[test_case("F", TaxonomyRank::Family(0); "ok_F")]
+    #[test_case("F1", TaxonomyRank::Family(1); "ok_F1")]
+    #[test_case("S", TaxonomyRank::Species(0); "ok_S")]
+    #[test_case("S1", TaxonomyRank::Species(1); "ok_S1")]
+    fn test_parse_tax_level(input: &str, expected: TaxonomyRank) {
+        pretty_assertions::assert_eq!(parse_taxonomy_level(input).unwrap(), expected);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_parse_tax_level_error_too_long() {
+        // TODO: implements Eq on errors (fix csv and io errors first)
+        parse_taxonomy_level("R11111").unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_parse_tax_level_error_invalid_code() {
+        // TODO: implements Eq on errors (fix csv and io errors first)
+        parse_taxonomy_level("L4").unwrap();
+    }
+
+
+    #[test]
+    #[should_panic]
+    fn test_parse_tax_level_error_offsetnotanumber() {
+        // TODO: implements Eq on errors (fix csv and io errors first)
+        parse_taxonomy_level("RR").unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_parse_tax_level_error_cannotinferprevious() {
+        // reset
+        {
+            let mut old_tax_rank = LAST_TAXONOMY_RANK_PARSED.lock().unwrap();
+            *old_tax_rank = None;
+        }
+        // TODO: implements Eq on errors (fix csv and io errors first)
+        parse_taxonomy_level("-").unwrap();
+    }
+
+
 }

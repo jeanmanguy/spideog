@@ -18,7 +18,7 @@ categories = ["command-line-utilities", "science"]
 thiserror = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 csv = "1"
-color-eyre = { version = "0.5", default-features = false, features = ["issue-url", "track-caller", "capture-spantrace"] }
+color-eyre = { version = "0.5", features = ["issue-url"] }
 clap = { version = "~3.0.0-beta.1", default-features = false, features = [ "wrap_help", "derive", "suggestions", "color", "std" ] }
 clap_generate = "3.0.0-beta.1"
 nom = { version = "5.1", features = ["regexp"]} # do I need regexp?
@@ -33,6 +33,16 @@ dialoguer = "0.6"
 enum_derive = "0.1.7"
 custom_derive = "0.1"
 eyre = "0.6"
+tracing-error = "0.1.2"
+tracing = { version = "0.1.17", features = [ "attributes" ] }
+tracing-subscriber = "0.2.10"
+exitcode = "1.1.2"
+
+[dev-dependencies]
+pretty_assertions = "^0.6"
+test-case = "1.0"
+elapsed = "0.1"
+
 
 
 [profile.dev]

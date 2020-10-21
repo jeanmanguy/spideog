@@ -1,9 +1,13 @@
+use color_eyre::Report;
 use daggy::{NodeIndex, Walker};
+use eyre::ContextCompat;
+use tracing::instrument;
 use std::io;
 
-use crate::{tree::SpideogTree, utils::clean_name, ErrorKind};
+use crate::{tree::SpideogTree, utils::clean_name};
 
-pub fn write_newick<W>(writer: &mut W, tree: SpideogTree, root: NodeIndex) -> Result<(), ErrorKind>
+
+pub fn write_newick<W>(writer: &mut W, tree: SpideogTree, root: NodeIndex) -> Result<(), Report>
 where
     W: std::io::Write,
 {
@@ -14,15 +18,21 @@ where
 }
 
 #[inline]
-pub fn write_name_distance<W>(
+pub fn write_name_distance<W, S>(
     writer: &mut W,
-    name: String,
+    name: S,
     distance: usize,
 ) -> Result<(), io::Error>
 where
     W: io::Write,
+    S: AsRef<str>,
 {
-    write!(writer, "{}:{}", clean_name(name), distance)
+    write!(writer, "{}", format_name_distance(name, distance))
+}
+
+#[inline]
+fn format_name_distance<S: AsRef<str>>(name: S, distance: usize) -> String {
+    format!("{}:{}", clean_name(name.as_ref()), distance)
 }
 
 #[inline]
@@ -30,15 +40,22 @@ pub fn write_end<W>(writer: &mut W) -> Result<(), io::Error>
 where
     W: io::Write,
 {
-    writeln!(writer, ";")
+    write!(writer, "{}", format_end())
 }
+
+#[instrument]
+#[inline]
+fn format_end() -> String {
+    String::from(";\n")
+}
+
 
 pub fn write_children_recursively<W>(
     writer: &mut W,
     tree: &SpideogTree,
     node: NodeIndex,
     parent_indent: usize,
-) -> Result<(), io::Error>
+) -> Result<(), Report>
 where
     W: io::Write,
 {
@@ -48,13 +65,15 @@ where
         children.push(node);
     }
 
-    let node_data = tree.node_weight(node).unwrap();
+    let node_data = tree.node_weight(node).wrap_err("node not found")?;
+    let distance = node_data.indent.checked_sub(parent_indent)
+        .wrap_err_with(|| format!("failed to compute new distance: node {} - parent {}", node_data.indent, parent_indent))?;
 
     if children.is_empty() {
         write_name_distance(
             writer,
-            node_data.organism.name.clone(),
-            node_data.indent - parent_indent,
+            &node_data.organism.name,
+            distance,
         )?;
     } else {
         writer.write_all(b"(")?;
@@ -74,10 +93,23 @@ where
 
         write_name_distance(
             writer,
-            node_data.organism.name.clone(),
-            node_data.indent - parent_indent,
+            &node_data.organism.name,
+            distance,
         )?;
     }
 
     Ok(())
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test_case::test_case;
+
+    #[test_case(("Homo sapiens", 2), "Homo_sapiens:2")]
+    #[test_case(("Bacteroidetes/Chlorobi group", 1), "Bacteroidetes_Chlorobi_group:1")]
+    fn test_format_name_distance<S: AsRef<str>>(input: (S, usize), expected: S) {
+        pretty_assertions::assert_eq!(format_name_distance(input.0.as_ref(), input.1), expected.as_ref());
+    }
 }
