@@ -23,10 +23,6 @@ Binaries for Linux, OSX, and Windows are available in the [Github release page](
 spideog --help
 ```
 
-### Example files
-
-TBD
-
 ### `tree`
 
 Convert the taxonomy trees of kraken reports to newick format.
@@ -36,6 +32,12 @@ The following command will generate the files `sample_1.tree` and `sample_2.tree
 ```sh
 spideog tree sample_1.kreport sample_2.kreport
 ```
+
+#### Example files
+
+- examplar kraken report: [tests/sample_data/sample.kreport](tests/sample_data/sample.kreport).
+- output: [tests/sample_data/sample.tree](tests/sample_data/sample.tree)
+
 
 #### Options 
 
