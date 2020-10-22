@@ -3,9 +3,8 @@ use std::fmt::Display;
 
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Deserializer};
-use tracing::instrument;
 use std::sync::Mutex;
-
+use tracing::instrument;
 
 static LAST_TAXONOMY_RANK_PARSED: Lazy<Mutex<Option<TaxonomyRank>>> =
     Lazy::new(|| Mutex::new(None));
@@ -31,16 +30,16 @@ pub enum TaxonomyRank {
 impl Display for TaxonomyRank {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            TaxonomyRank::Unclassified(i) => write!(f, "U{}", i),
-            TaxonomyRank::Root(i) => write!(f, "R{}", i),
-            TaxonomyRank::Domain(i) => write!(f, "D{}", i),
-            TaxonomyRank::Kingdom(i) => write!(f, "K{}", i),
-            TaxonomyRank::Phylum(i) => write!(f, "P{}", i),
-            TaxonomyRank::Class(i) => write!(f, "C{}", i),
-            TaxonomyRank::Order(i) => write!(f, "O{}", i),
-            TaxonomyRank::Family(i) => write!(f, "F{}", i),
-            TaxonomyRank::Genus(i) => write!(f, "G{}", i),
-            TaxonomyRank::Species(i) => write!(f, "S{}", i),
+            Self::Unclassified(i) => write!(f, "U{}", i),
+            Self::Root(i) => write!(f, "R{}", i),
+            Self::Domain(i) => write!(f, "D{}", i),
+            Self::Kingdom(i) => write!(f, "K{}", i),
+            Self::Phylum(i) => write!(f, "P{}", i),
+            Self::Class(i) => write!(f, "C{}", i),
+            Self::Order(i) => write!(f, "O{}", i),
+            Self::Family(i) => write!(f, "F{}", i),
+            Self::Genus(i) => write!(f, "G{}", i),
+            Self::Species(i) => write!(f, "S{}", i),
         }
     }
 }
@@ -49,7 +48,10 @@ impl Display for TaxonomyRank {
 pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
     // TODO: add previous tax rank here, make it pure
     if string.len() > 2 {
-        return Err(ErrorKind::TaxRankParsingInvalidLength(String::from(string), string.len()));
+        return Err(ErrorKind::TaxRankParsingInvalidLength(
+            String::from(string),
+            string.len(),
+        ));
     }
 
     let mut string_chars = string.chars();
@@ -58,9 +60,12 @@ pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
 
     let offset: u32 = if let Some(number) = string_chars.next() {
         if number.is_ascii_digit() {
-            number.to_digit(10u32).unwrap()
+            number.to_digit(10_u32).unwrap()
         } else {
-            return Err(ErrorKind::TaxRankParsingOfffsetNotANumber(String::from(string), number))
+            return Err(ErrorKind::TaxRankParsingOfffsetNotANumber(
+                String::from(string),
+                number,
+            ));
         }
     } else {
         0_u32
@@ -92,10 +97,15 @@ pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
                     TaxonomyRank::Species(i) => Ok(TaxonomyRank::Species(i + 1)),
                 }
             } else {
-                Err(ErrorKind::TaxRankParsingCannotInferRank(String::from(string)))
+                Err(ErrorKind::TaxRankParsingCannotInferRank(String::from(
+                    string,
+                )))
             }
         }
-        _ => Err(ErrorKind::TaxRankParsingInvalidRankCode(String::from(string), letter)),
+        _ => Err(ErrorKind::TaxRankParsingInvalidRankCode(
+            String::from(string),
+            letter,
+        )),
     }?;
 
     let mut old_tax_rank = LAST_TAXONOMY_RANK_PARSED.lock().unwrap();
@@ -105,13 +115,11 @@ pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
 }
 
 impl<'de> Deserialize<'de> for TaxonomyRank {
-
-    
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
-        let string = String::deserialize(deserializer)?; 
+        let string = String::deserialize(deserializer)?;
         parse_taxonomy_level(&string).map_err(serde::de::Error::custom)
     }
 
@@ -127,9 +135,8 @@ impl<'de> Deserialize<'de> for TaxonomyRank {
 
 #[cfg(test)]
 mod tests {
-use super::*;
-use test_case::test_case;
-
+    use super::*;
+    use test_case::test_case;
 
     #[test]
     fn test_order_taxonomy() {
@@ -169,7 +176,6 @@ use test_case::test_case;
         parse_taxonomy_level("L4").unwrap();
     }
 
-
     #[test]
     #[should_panic]
     fn test_parse_tax_level_error_offsetnotanumber() {
@@ -188,6 +194,4 @@ use test_case::test_case;
         // TODO: implements Eq on errors (fix csv and io errors first)
         parse_taxonomy_level("-").unwrap();
     }
-
-
 }

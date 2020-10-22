@@ -1,7 +1,7 @@
 use crate::parse_ident_organism_name;
-use core::convert::TryFrom;
 use crate::KrakenReportRecord;
 use color_eyre::Report;
+use core::convert::TryFrom;
 use std::fmt::Display;
 
 use daggy::{Dag, NodeIndex, Walker};
@@ -34,7 +34,7 @@ impl TryFrom<KrakenReportRecord> for IndentOrganism {
             taxonomy_id: value.4,
         };
 
-        let node = IndentOrganism {
+        let node = Self {
             indent,
             organism: organism_tree,
         };
@@ -46,11 +46,10 @@ impl TryFrom<KrakenReportRecord> for IndentOrganism {
 // TODO: make as struct and impl functions above for it, also store root with it, and other  info (n species, lower taxonomy rank, etc.)
 pub type SpideogTree = Dag<IndentOrganism, u32, u32>;
 
-
 pub fn ancestors(node: NodeIndex, dag: &SpideogTree) -> Vec<NodeIndex> {
     let mut ancestors_vec = Vec::new();
     let mut parent_recursion = dag.recursive_walk(node, |g, n| g.parents(n).iter(g).last());
-    while let Some((_, id)) = parent_recursion.walk_next(&dag) {
+    while let Some((_, id)) = parent_recursion.walk_next(dag) {
         ancestors_vec.push(id);
     }
     ancestors_vec
@@ -67,13 +66,15 @@ pub fn find_correct_parent(
     if last_node.indent < node.indent {
         tracing::debug!(
             "Parent of `{}` is previously added node `{}`",
-            node.organism, last_node.organism
+            node.organism,
+            last_node.organism
         );
         Ok(last_node_id)
     } else {
         tracing::debug!(
             "Parent of `{}` is not the previously added node `{}`, searching for a suitable parent",
-            node.organism, last_node.organism
+            node.organism,
+            last_node.organism
         );
 
         let parents = ancestors(last_node_id, dag);
@@ -83,7 +84,8 @@ pub fn find_correct_parent(
             let parent = dag.node_weight(*parent_id).unwrap();
             tracing::debug!(
                 "Found suitable parent for `{}` => `{}`",
-                node.organism, parent.organism
+                node.organism,
+                parent.organism
             );
             Ok(*parent_id)
         } else if node.organism.taxonomy_level <= TaxonomyRank::Domain(9) {
@@ -109,4 +111,3 @@ pub fn add_root_to_tree(
     let root_node_id = dag.add_node(node);
     Ok(root_node_id)
 }
-

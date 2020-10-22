@@ -1,11 +1,10 @@
 use color_eyre::Report;
 use daggy::{NodeIndex, Walker};
 use eyre::ContextCompat;
-use tracing::instrument;
 use std::io;
+use tracing::instrument;
 
 use crate::{tree::SpideogTree, utils::clean_name};
-
 
 pub fn write_newick<W>(writer: &mut W, tree: SpideogTree, root: NodeIndex) -> Result<(), Report>
 where
@@ -18,11 +17,7 @@ where
 }
 
 #[inline]
-pub fn write_name_distance<W, S>(
-    writer: &mut W,
-    name: S,
-    distance: usize,
-) -> Result<(), io::Error>
+pub fn write_name_distance<W, S>(writer: &mut W, name: S, distance: usize) -> Result<(), io::Error>
 where
     W: io::Write,
     S: AsRef<str>,
@@ -49,7 +44,6 @@ fn format_end() -> String {
     String::from(";\n")
 }
 
-
 pub fn write_children_recursively<W>(
     writer: &mut W,
     tree: &SpideogTree,
@@ -66,15 +60,18 @@ where
     }
 
     let node_data = tree.node_weight(node).wrap_err("node not found")?;
-    let distance = node_data.indent.checked_sub(parent_indent)
-        .wrap_err_with(|| format!("failed to compute new distance: node {} - parent {}", node_data.indent, parent_indent))?;
+    let distance = node_data
+        .indent
+        .checked_sub(parent_indent)
+        .wrap_err_with(|| {
+            format!(
+                "failed to compute new distance: node {} - parent {}",
+                node_data.indent, parent_indent
+            )
+        })?;
 
     if children.is_empty() {
-        write_name_distance(
-            writer,
-            &node_data.organism.name,
-            distance,
-        )?;
+        write_name_distance(writer, &node_data.organism.name, distance)?;
     } else {
         writer.write_all(b"(")?;
 
@@ -91,25 +88,23 @@ where
 
         writer.write_all(b")")?;
 
-        write_name_distance(
-            writer,
-            &node_data.organism.name,
-            distance,
-        )?;
+        write_name_distance(writer, &node_data.organism.name, distance)?;
     }
 
     Ok(())
 }
-
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use test_case::test_case;
 
-    #[test_case(("Homo sapiens", 2), "Homo_sapiens:2")]
-    #[test_case(("Bacteroidetes/Chlorobi group", 1), "Bacteroidetes_Chlorobi_group:1")]
-    fn test_format_name_distance<S: AsRef<str>>(input: (S, usize), expected: S) {
-        pretty_assertions::assert_eq!(format_name_distance(input.0.as_ref(), input.1), expected.as_ref());
+    #[test_case(&("Homo sapiens", 2), "Homo_sapiens:2")]
+    #[test_case(&("Bacteroidetes/Chlorobi group", 1), "Bacteroidetes_Chlorobi_group:1")]
+    fn test_format_name_distance<S: AsRef<str>>(input: &(S, usize), expected: S) {
+        pretty_assertions::assert_eq!(
+            format_name_distance(input.0.as_ref(), input.1),
+            expected.as_ref()
+        );
     }
 }

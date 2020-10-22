@@ -1,3 +1,5 @@
+// #![warn(clippy::all, clippy::pedantic, clippy::nursery, clippy::cargo)]
+
 #[macro_use]
 extern crate serde;
 #[macro_use]
@@ -6,7 +8,6 @@ extern crate clap;
 extern crate custom_derive;
 #[macro_use]
 extern crate enum_derive;
-
 
 mod bracken;
 mod cli;
@@ -20,10 +21,10 @@ mod utils;
 use crate::clap::Clap;
 use cli::{subcommands::Command, Opts};
 
-use color_eyre::{eyre::Report};
+use color_eyre::eyre::Report;
 use displaydoc::Display;
 use io::{get_output_file_name, read_report_tree, write_tree};
-use kraken::{KrakenReportRecord};
+use kraken::KrakenReportRecord;
 use parser::parse_ident_organism_name;
 use thiserror::Error;
 use tracing::{info, instrument};
@@ -86,7 +87,7 @@ fn main() -> Result<(), Report> {
             info!("subcommand `tree`");
             // TODO check all files exists, gather errors with eyre
             // https://github.com/yaahc/color-eyre/blob/master/examples/multiple_errors.rs
-            for report in sub_opts.files.reports.iter() {
+            for report in &sub_opts.files.reports {
                 let (tree, root) = read_report_tree(report, sub_opts.headers)?;
                 let output_path = get_output_file_name(report, &sub_opts.prefix);
                 info!("will write output to `{}`", &output_path.display());

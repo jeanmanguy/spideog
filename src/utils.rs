@@ -1,13 +1,13 @@
 use std::borrow::Cow;
 
+const fn is_trouble(c: char) -> bool {
+    c == ' ' || c == '.' || c == ',' || c == '=' || c == '[' || c == ']' || c == '/' || c == ':'
+}
+
 // based from https://lise-henry.github.io/articles/optimising_strings.html
 // not going to use regex just for that
 pub fn clean_name<'a, S: Into<Cow<'a, str>>>(input: S) -> Cow<'a, str> {
     let input = input.into();
-
-    fn is_trouble(c: char) -> bool {
-        c == ' ' || c == '.' || c == ',' || c == '=' || c == '[' || c == ']' || c == '/' || c == ':'
-    }
 
     let first_trouble_character = input.find(is_trouble);
     if let Some(first_trouble_character) = first_trouble_character {

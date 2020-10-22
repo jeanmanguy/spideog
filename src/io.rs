@@ -3,9 +3,9 @@ use color_eyre::{eyre::Context, Help, Report};
 use csv::Reader;
 use daggy::NodeIndex;
 use dialoguer::Confirm;
-use tracing::instrument;
-use std::{ffi::OsStr, fs::File, fs::OpenOptions, io, path::PathBuf};
 use std::process;
+use std::{ffi::OsStr, fs::File, fs::OpenOptions, io, path::PathBuf};
+use tracing::instrument;
 
 use self::newick::write_newick;
 use crate::tree::SpideogTree;
@@ -28,7 +28,10 @@ where
     P: Into<PathBuf>,
 {
     #[instrument]
-    fn internal_read_report_tree(path: PathBuf, headers: bool) -> Result<(SpideogTree, NodeIndex), Report> {
+    fn internal_read_report_tree(
+        path: PathBuf,
+        headers: bool,
+    ) -> Result<(SpideogTree, NodeIndex), Report> {
         let mut reader = get_reader(&path, headers)
             .wrap_err_with(|| format!("Failed to read file `{}`", path.display()))?;
         report::read_kraken_report_tree(&mut reader)
@@ -52,7 +55,7 @@ custom_derive! {
 pub fn get_output_file_name(input: &PathBuf, prefix: &Option<String>) -> PathBuf {
     let stem = input
         .file_stem()
-        .unwrap_or_else(|| &OsStr::new("kraken"))
+        .unwrap_or_else(|| OsStr::new("kraken"))
         .to_string_lossy();
     let new_path = if let Some(prefix) = prefix {
         format!("{}_{}.tree", prefix, stem)
@@ -61,7 +64,6 @@ pub fn get_output_file_name(input: &PathBuf, prefix: &Option<String>) -> PathBuf
     };
     PathBuf::from(new_path)
 }
-
 
 pub fn write_tree(
     tree: SpideogTree,
@@ -82,7 +84,6 @@ pub fn write_tree(
     Ok(())
 }
 
-
 pub fn can_open_file<P>(path: P, overwrite: bool) -> Result<(), Report>
 where
     P: Into<PathBuf>,
@@ -95,8 +96,9 @@ where
                 log::debug!("Force overwriting `{}`", path.display());
             } else if atty::is(Stream::Stdout) {
                 if Confirm::new()
-                .with_prompt(format!("Overwrite `{}`?", path.display()))
-                .interact()? {
+                    .with_prompt(format!("Overwrite `{}`?", path.display()))
+                    .interact()?
+                {
                     log::debug!("overwriting file `{}`", path.display())
                 } else {
                     log::debug!("refused to overwrite file, exiting...");
