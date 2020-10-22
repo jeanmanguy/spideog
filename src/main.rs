@@ -1,6 +1,6 @@
-#![warn(clippy::all, clippy::pedantic, clippy::nursery, clippy::cargo)]
-#![allow(clippy::missing_const_for_fn)]
-#![allow(clippy::multiple_crate_versions)]
+// #![warn(clippy::all, clippy::pedantic, clippy::nursery, clippy::cargo)]
+// #![allow(clippy::missing_const_for_fn)]
+// #![allow(clippy::multiple_crate_versions)]
 
 #[macro_use]
 extern crate serde;
