@@ -172,6 +172,14 @@ mod tests {
     }
 
     #[test]
+    fn test_plus_one() {
+        assert_eq!(
+            TaxonomyRank::Kingdom(2).plus_one(),
+            TaxonomyRank::Kingdom(3)
+        )
+    }
+
+    #[test]
     #[should_panic]
     fn test_parse_tax_level_error_too_long() {
         // TODO: implements Eq on errors (fix csv and io errors first)
