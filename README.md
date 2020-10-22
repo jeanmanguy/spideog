@@ -1,4 +1,4 @@
-# 🐦 spideog
+# 🐦 spideog - Command line utility for Kraken2 reports.
 
 ![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)
 ![lastest version](https://img.shields.io/github/v/release/jeanmanguy/spideog)
@@ -6,11 +6,15 @@
 [![Build Status](https://travis-ci.com/jeanmanguy/spideog.svg?branch=main)](https://travis-ci.com/jeanmanguy/spideog)
 [![Rust](https://github.com/jeanmanguy/spideog/workflows/Rust/badge.svg?branch=main)](https://github.com/jeanmanguy/spideog/actions?query=workflow%3ARust)
 
-Command line utility for Kraken2 reports.
-
-Supports reports from [Kraken2](https://github.com/DerrickWood/kraken2) or from [Bracken](https://github.com/jenniferlu717/Bracken).
-
 This is a work in progress. The commands may change between released versions, please read the [CHANGELOG](CHANGELOG).
+
+## Goals
+
+The first goal of this project is to convert Kraken reports into standard file formats that can be easily read with R to allow people to craft thier own data visualisations and compute statistics more easily using the tidyverse, vegan, ape, and ggtree/treeio. The second goal is to get summary information from the Kraken reports directly from the command line.
+
+Supports Kraken reports from [Kraken2](https://github.com/DerrickWood/kraken2) or from [Bracken](https://github.com/jenniferlu717/Bracken). 
+
+
 
 ## Installation
 
