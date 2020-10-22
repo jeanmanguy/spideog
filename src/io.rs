@@ -1,14 +1,13 @@
 use atty::Stream;
 use color_eyre::{eyre::Context, Help, Report};
 use csv::Reader;
-use daggy::NodeIndex;
 use dialoguer::Confirm;
 use std::process;
 use std::{ffi::OsStr, fs::File, fs::OpenOptions, io, path::PathBuf};
 use tracing::instrument;
 
-use self::newick::write_newick;
-use crate::tree::SpideogTree;
+use self::{newick::write_newick, report::ParseKrakenReport};
+use crate::tree::TaxonomyTree;
 
 pub mod newick;
 pub mod report;
@@ -23,18 +22,15 @@ custom_derive! {
     }
 }
 
-pub fn read_report_tree<P>(path: P, headers: bool) -> Result<(SpideogTree, NodeIndex), Report>
+pub fn read_report_tree<P>(path: P, headers: bool) -> Result<TaxonomyTree, Report>
 where
     P: Into<PathBuf>,
 {
     #[instrument]
-    fn internal_read_report_tree(
-        path: PathBuf,
-        headers: bool,
-    ) -> Result<(SpideogTree, NodeIndex), Report> {
+    fn internal_read_report_tree(path: PathBuf, headers: bool) -> Result<TaxonomyTree, Report> {
         let mut reader = get_reader(&path, headers)
             .wrap_err_with(|| format!("Failed to read file `{}`", path.display()))?;
-        report::read_kraken_report_tree(&mut reader)
+        ParseKrakenReport::parse(&mut reader)
             .wrap_err_with(|| format!("Failed to parse file `{}`", path.display()))
             .suggestion("Try using the `--has-headers` option if your Kraken report has headers")
     }
@@ -66,8 +62,7 @@ pub fn get_output_file_name(input: &PathBuf, prefix: &Option<String>) -> PathBuf
 }
 
 pub fn write_tree(
-    tree: SpideogTree,
-    root: NodeIndex,
+    tree: TaxonomyTree,
     output: &PathBuf,
     format: &OutputTreeFormat,
     overwrite: bool,
@@ -77,7 +72,7 @@ pub fn write_tree(
 
     match format {
         OutputTreeFormat::Newick => {
-            write_newick(&mut writer, tree, root).wrap_err("Newick Serializer failed")?
+            write_newick(&mut writer, tree).wrap_err("Newick Serializer failed")?
         }
     }
 

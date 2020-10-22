@@ -44,6 +44,23 @@ impl Display for TaxonomyRank {
     }
 }
 
+impl TaxonomyRank {
+    pub fn plus_one(self) -> Self {
+        match self {
+            Self::Unclassified(i) => Self::Unclassified(i.checked_add(1).unwrap()),
+            Self::Root(i) => Self::Root(i.checked_add(1).unwrap()),
+            Self::Domain(i) => Self::Domain(i.checked_add(1).unwrap()),
+            Self::Kingdom(i) => Self::Kingdom(i.checked_add(1).unwrap()),
+            Self::Phylum(i) => Self::Phylum(i.checked_add(1).unwrap()),
+            Self::Class(i) => Self::Class(i.checked_add(1).unwrap()),
+            Self::Order(i) => Self::Order(i.checked_add(1).unwrap()),
+            Self::Family(i) => Self::Family(i.checked_add(1).unwrap()),
+            Self::Genus(i) => Self::Genus(i.checked_add(1).unwrap()),
+            Self::Species(i) => Self::Species(i.checked_add(1).unwrap()),
+        }
+    }
+}
+
 #[instrument]
 pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
     // TODO: add previous tax rank here, make it pure
@@ -84,18 +101,8 @@ pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
         'S' => Ok(TaxonomyRank::Species(offset)),
         '-' => {
             if let Some(previous_tax_rank) = *LAST_TAXONOMY_RANK_PARSED.lock().unwrap() {
-                match previous_tax_rank {
-                    TaxonomyRank::Unclassified(i) => Ok(TaxonomyRank::Unclassified(i + 1)),
-                    TaxonomyRank::Root(i) => Ok(TaxonomyRank::Root(i + 1)),
-                    TaxonomyRank::Domain(i) => Ok(TaxonomyRank::Domain(i + 1)),
-                    TaxonomyRank::Kingdom(i) => Ok(TaxonomyRank::Kingdom(i + 1)),
-                    TaxonomyRank::Phylum(i) => Ok(TaxonomyRank::Phylum(i + 1)),
-                    TaxonomyRank::Class(i) => Ok(TaxonomyRank::Class(i + 1)),
-                    TaxonomyRank::Order(i) => Ok(TaxonomyRank::Order(i + 1)),
-                    TaxonomyRank::Family(i) => Ok(TaxonomyRank::Family(i + 1)),
-                    TaxonomyRank::Genus(i) => Ok(TaxonomyRank::Genus(i + 1)),
-                    TaxonomyRank::Species(i) => Ok(TaxonomyRank::Species(i + 1)),
-                }
+                // TODO: there has to be a better way to do that, maybe without the mutex business
+                Ok(previous_tax_rank.plus_one())
             } else {
                 Err(ErrorKind::TaxRankParsingCannotInferRank(String::from(
                     string,
@@ -107,6 +114,8 @@ pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
             letter,
         )),
     }?;
+
+    // let tax_rank2: Option<TaxonomyRank> =
 
     let mut old_tax_rank = LAST_TAXONOMY_RANK_PARSED.lock().unwrap();
     *old_tax_rank = Some(tax_rank);
@@ -159,7 +168,7 @@ mod tests {
     #[test_case("S", TaxonomyRank::Species(0); "ok_S")]
     #[test_case("S1", TaxonomyRank::Species(1); "ok_S1")]
     fn test_parse_tax_level(input: &str, expected: TaxonomyRank) {
-        pretty_assertions::assert_eq!(parse_taxonomy_level(input).unwrap(), expected);
+        assert_eq!(parse_taxonomy_level(input).unwrap(), expected);
     }
 
     #[test]

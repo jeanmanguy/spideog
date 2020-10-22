@@ -4,13 +4,13 @@ use eyre::ContextCompat;
 use std::io;
 use tracing::instrument;
 
-use crate::{tree::SpideogTree, utils::clean_name};
+use crate::{tree::TaxonomyTree, utils::clean_name};
 
-pub fn write_newick<W>(writer: &mut W, tree: SpideogTree, root: NodeIndex) -> Result<(), Report>
+pub fn write_newick<W>(writer: &mut W, tree: TaxonomyTree) -> Result<(), Report>
 where
     W: std::io::Write,
 {
-    write_children_recursively(writer, &tree, root, 0)?;
+    write_children_recursively(writer, &tree, tree.root.unwrap(), 0)?;
     write_end(writer)?;
 
     Ok(())
@@ -46,20 +46,20 @@ fn format_end() -> String {
 
 pub fn write_children_recursively<W>(
     writer: &mut W,
-    tree: &SpideogTree,
+    tree: &TaxonomyTree,
     node: NodeIndex,
     parent_indent: usize,
 ) -> Result<(), Report>
 where
     W: io::Write,
 {
-    let mut child_walker = tree.children(node);
+    let mut child_walker = tree.tree.children(node);
     let mut children = Vec::new();
-    while let Some((_, node)) = child_walker.walk_next(tree) {
+    while let Some((_, node)) = child_walker.walk_next(&tree.tree) {
         children.push(node);
     }
 
-    let node_data = tree.node_weight(node).wrap_err("node not found")?;
+    let node_data = tree.tree.node_weight(node).wrap_err("node not found")?;
     let distance = node_data
         .indent
         .checked_sub(parent_indent)
@@ -102,7 +102,7 @@ mod tests {
     #[test_case(&("Homo sapiens", 2), "Homo_sapiens:2")]
     #[test_case(&("Bacteroidetes/Chlorobi group", 1), "Bacteroidetes_Chlorobi_group:1")]
     fn test_format_name_distance<S: AsRef<str>>(input: &(S, usize), expected: S) {
-        pretty_assertions::assert_eq!(
+        assert_eq!(
             format_name_distance(input.0.as_ref(), input.1),
             expected.as_ref()
         );

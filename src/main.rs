@@ -1,4 +1,6 @@
-// #![warn(clippy::all, clippy::pedantic, clippy::nursery, clippy::cargo)]
+#![warn(clippy::all, clippy::pedantic, clippy::nursery, clippy::cargo)]
+#![allow(clippy::missing_const_for_fn)]
+#![allow(clippy::multiple_crate_versions)]
 
 #[macro_use]
 extern crate serde;
@@ -48,15 +50,19 @@ pub enum ErrorKind {
     TaxRankParsingInvalidRankCode(String, char),
     /// failed to parse taxonomy rank from `{0}`: cannot infer previous taxonomy rank from previous records
     TaxRankParsingCannotInferRank(String),
+    /// node not found
+    NodeNotFound,
     // ///IO error
     // #[error(transparent)]
     // Io(#[from] std::io::Error),
     // ///CSV parser error
     // #[error(transparent)]
-    // Csv(#[from] csv::Error),
+    // Csv(#[from] csv::Error)
 }
 
 // Boilerplate: https://github.com/yaahc/color-eyre/blob/master/examples/usage.rs
+// TODO: adjust for use
+// TODO: move to logging.rs?
 fn install_tracing() {
     use tracing_error::ErrorLayer;
     use tracing_subscriber::prelude::*;
@@ -88,16 +94,10 @@ fn main() -> Result<(), Report> {
             // TODO check all files exists, gather errors with eyre
             // https://github.com/yaahc/color-eyre/blob/master/examples/multiple_errors.rs
             for report in &sub_opts.files.reports {
-                let (tree, root) = read_report_tree(report, sub_opts.headers)?;
+                let tree = read_report_tree(report, sub_opts.headers)?;
                 let output_path = get_output_file_name(report, &sub_opts.prefix);
                 info!("will write output to `{}`", &output_path.display());
-                write_tree(
-                    tree,
-                    root,
-                    &output_path,
-                    &sub_opts.format,
-                    sub_opts.overwrite,
-                )?;
+                write_tree(tree, &output_path, &sub_opts.format, sub_opts.overwrite)?;
             }
         }
     }

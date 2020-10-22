@@ -44,70 +44,93 @@ impl TryFrom<KrakenReportRecord> for IndentOrganism {
 }
 
 // TODO: make as struct and impl functions above for it, also store root with it, and other  info (n species, lower taxonomy rank, etc.)
-pub type SpideogTree = Dag<IndentOrganism, u32, u32>;
+// pub type SpideogTree = Dag<IndentOrganism, u32, u32>;
 
-pub fn ancestors(node: NodeIndex, dag: &SpideogTree) -> Vec<NodeIndex> {
-    let mut ancestors_vec = Vec::new();
-    let mut parent_recursion = dag.recursive_walk(node, |g, n| g.parents(n).iter(g).last());
-    while let Some((_, id)) = parent_recursion.walk_next(dag) {
-        ancestors_vec.push(id);
-    }
-    ancestors_vec
+#[derive(Debug, Default)]
+pub struct TaxonomyTree {
+    pub tree: Dag<IndentOrganism, u32, u32>,
+    pub root: Option<NodeIndex>,
+    pub last_node_added_id: Option<NodeIndex>,
 }
 
-pub fn find_correct_parent(
-    node: &IndentOrganism,
-    last_node_id: NodeIndex,
-    root: NodeIndex,
-    dag: &SpideogTree,
-) -> Result<NodeIndex, ErrorKind> {
-    let last_node = dag.node_weight(last_node_id).unwrap();
+// impl Default for TaxonomyTree {
+//     fn default() -> Self {
+//         Sel
+//     }
+// }
 
-    if last_node.indent < node.indent {
-        tracing::debug!(
-            "Parent of `{}` is previously added node `{}`",
-            node.organism,
-            last_node.organism
-        );
-        Ok(last_node_id)
-    } else {
-        tracing::debug!(
-            "Parent of `{}` is not the previously added node `{}`, searching for a suitable parent",
-            node.organism,
-            last_node.organism
-        );
+impl TaxonomyTree {
+    pub fn ancestors_of(&self, node: NodeIndex) -> Vec<NodeIndex> {
+        let mut ancestors_vec = Vec::new();
+        let mut parent_recursion = self
+            .tree
+            .recursive_walk(node, |g, n| g.parents(n).iter(g).last());
+        while let Some((_, id)) = parent_recursion.walk_next(&self.tree) {
+            ancestors_vec.push(id);
+        }
+        ancestors_vec
+    }
 
-        let parents = ancestors(last_node_id, dag);
-        let suitable_parent = parents.iter().find(|id| dag[**id].indent < node.indent);
+    pub fn last_node_added(&self) -> Option<&IndentOrganism> {
+        self.last_node_added_id
+            .and_then(|i| self.tree.node_weight(i))
+    }
 
-        if let Some(parent_id) = suitable_parent {
-            let parent = dag.node_weight(*parent_id).unwrap();
-            tracing::debug!(
-                "Found suitable parent for `{}` => `{}`",
-                node.organism,
-                parent.organism
-            );
-            Ok(*parent_id)
-        } else if node.organism.taxonomy_level <= TaxonomyRank::Domain(9) {
-            Ok(root)
+    pub fn find_correct_parent_of(
+        &self,
+        organism_to_add: &IndentOrganism,
+    ) -> Result<NodeIndex, ErrorKind> {
+        let last_node = self.last_node_added();
+
+        if let Some(last_node) = last_node {
+            if last_node.indent < organism_to_add.indent {
+                tracing::debug!(
+                    "Parent of `{}` is previously added node `{}`",
+                    organism_to_add.organism,
+                    last_node.organism
+                );
+                Ok(self.last_node_added_id.unwrap())
+            } else {
+                tracing::debug!(
+                    "Parent of `{}` is not the previously added node `{}`, searching for a suitable parent",
+                    organism_to_add.organism,
+                    last_node.organism
+                );
+
+                let parents = self.ancestors_of(self.last_node_added_id.unwrap()); //TODO: remove unwrap after removing option on TaxonomyTree
+                let suitable_parent = parents
+                    .iter()
+                    .find(|id| self.tree[**id].indent < organism_to_add.indent);
+
+                if let Some(parent_id) = suitable_parent {
+                    let parent = self.tree.node_weight(*parent_id).unwrap();
+                    tracing::debug!(
+                        "Found suitable parent for `{}` => `{}`",
+                        organism_to_add.organism,
+                        parent.organism
+                    );
+                    Ok(*parent_id)
+                } else if organism_to_add.organism.taxonomy_level <= TaxonomyRank::Domain(9) {
+                    Ok(self.root.unwrap())
+                } else {
+                    Err(ErrorKind::NoSuitableParent(
+                        organism_to_add.organism.name.clone(),
+                        organism_to_add.indent,
+                        organism_to_add.organism.taxonomy_level,
+                    ))
+                }
+            }
         } else {
-            Err(ErrorKind::NoSuitableParent(
-                node.organism.name.clone(),
-                node.indent,
-                node.organism.taxonomy_level,
-            ))
+            panic!("empty tree")
         }
     }
-}
 
-pub fn add_root_to_tree(
-    node: IndentOrganism,
-    dag: &mut SpideogTree,
-) -> Result<NodeIndex, ErrorKind> {
-    if node.indent != 0 {
-        return Err(ErrorKind::NonZeroIndentRoot(node.indent));
+    pub fn root(&mut self, node: IndentOrganism) -> Result<&mut Self, ErrorKind> {
+        if node.indent != 0 {
+            return Err(ErrorKind::NonZeroIndentRoot(node.indent));
+        }
+
+        self.root = Some(self.tree.add_node(node));
+        Ok(self)
     }
-
-    let root_node_id = dag.add_node(node);
-    Ok(root_node_id)
 }

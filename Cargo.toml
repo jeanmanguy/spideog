@@ -10,7 +10,7 @@ repository = "https://github.com/jeanmanguy/spideog"
 documentation = "https://github.com/jeanmanguy/spideog/blob/main/README.md"
 keywords = ["cli", "bioinformatics", "metagenomics"]
 categories = ["command-line-utilities", "science"]
-
+license = "MIT/Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -39,7 +39,6 @@ tracing-subscriber = "0.2.10"
 exitcode = "1.1.2"
 
 [dev-dependencies]
-pretty_assertions = "^0.6"
 test-case = "1.0"
 elapsed = "0.1"
 
