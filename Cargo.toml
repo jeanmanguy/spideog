@@ -1,6 +1,6 @@
 [package]
 name = "spideog"
-version = "0.1.1-alpha.8"
+version = "0.1.1-alpha.9"
 authors = ["Jean Manguy <jean@manguy.eu>"]
 edition = "2018"
 description = "Command line utility to visualize and analyze metagenomics classification from Kraken and Bracken"
