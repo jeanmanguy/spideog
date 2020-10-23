@@ -17,9 +17,9 @@ pub struct BrackenRecord {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
     // use indextree::Arena;
-    use std::collections::BTreeMap;
+    // use std::collections::BTreeMap;
 
     // #[test]
     // fn bracken_works() {

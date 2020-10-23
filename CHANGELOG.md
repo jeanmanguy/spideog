@@ -11,12 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added 
 
 - dev: continous integration builds for linux, osx, and windows
-- documentation: example kraken report
+- error: add spantrace
+- documentation: example kraken report and output
 - documentation: links to downloads
 
 ### Modified
 
 - bugfix: quotes and round brackets were added to the list of characters to escape in taxon name
+- refactor: started to refactor to facilitate unit testing
 
 ## [0.1.0] - 2020-10-19
 

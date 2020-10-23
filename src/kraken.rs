@@ -39,3 +39,4 @@ pub struct KrakenFragments {
     pub count_clade: u64,
     pub count_taxon: u64,
 }
+

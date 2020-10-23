@@ -3,6 +3,7 @@ use log::LevelFilter;
 use simplelog::{ConfigBuilder, TermLogger, TerminalMode, WriteLogger};
 use std::fs::OpenOptions;
 use std::path::PathBuf;
+use tracing::instrument;
 
 #[derive(Clap, Debug)]
 pub struct Logging {
@@ -15,6 +16,7 @@ pub struct Logging {
 }
 
 impl Logging {
+    #[instrument]
     pub fn setup(&self) -> Result<(), Report> {
         let verbosity: LevelFilter = if self.verbose {
             LevelFilter::Debug
@@ -28,6 +30,7 @@ impl Logging {
         }
     }
 
+    #[instrument]
     fn setup_file_log(verbosity: LevelFilter, filepath: &PathBuf) -> Result<(), Report> {
         let file = OpenOptions::new()
             .write(true)
@@ -49,6 +52,7 @@ impl Logging {
         Ok(())
     }
 
+    #[instrument]
     fn setup_term_log(verbosity: LevelFilter) -> Result<(), Report> {
         TermLogger::init(
             verbosity,
