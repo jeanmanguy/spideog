@@ -7,7 +7,7 @@ use std::fmt::Display;
 use daggy::{Dag, NodeIndex, Walker};
 use tracing::instrument;
 
-use crate::{kraken::Organism, taxonomy::TaxonomyRank, ErrorKind};
+use crate::kraken::Organism;
 
 #[derive(Debug)]
 pub struct IndentOrganism {

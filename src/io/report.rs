@@ -1,7 +1,6 @@
 use color_eyre::{eyre::Context, Help, Report};
 use core::convert::TryFrom;
 use csv::Reader;
-use daggy::NodeIndex;
 use std::fs::File;
 
 use crate::{kraken::KrakenReportRecord, tree::IndentOrganism, tree::TaxonomyTree};
