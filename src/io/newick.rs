@@ -10,7 +10,7 @@ pub fn write_newick<W>(writer: &mut W, tree: TaxonomyTree) -> Result<(), Report>
 where
     W: std::io::Write,
 {
-    write_children_recursively(writer, &tree, tree.root.unwrap(), 0)?;
+    write_children_recursively(writer, &tree, tree.origin, 0)?;
     write_end(writer)?;
 
     Ok(())
