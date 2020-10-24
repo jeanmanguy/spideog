@@ -3,20 +3,20 @@ use core::convert::TryFrom;
 use csv::Reader;
 use std::fs::File;
 
-use crate::{kraken::KrakenReportRecord, tree::IndentOrganism, tree::TaxonomyTree};
+use crate::{kraken::ReportRecord, tree::IndentOrganism, tree::Tree};
 
 pub trait ParseKrakenReport: Sized {
     fn parse(reader: &mut Reader<File>) -> Result<Self, Report>;
 }
 
-impl ParseKrakenReport for TaxonomyTree {
+impl ParseKrakenReport for Tree {
     fn parse(reader: &mut Reader<File>) -> Result<Self, Report> {
-        let first_record: KrakenReportRecord = reader.deserialize().next().unwrap()?;
+        let first_record: ReportRecord = reader.deserialize().next().unwrap()?;
         let origin = IndentOrganism::try_from(first_record)?;
-        let mut taxonomy_tree = TaxonomyTree::new(origin);
+        let mut taxonomy_tree = Self::new(origin);
 
         for result in reader.deserialize() {
-            let record: KrakenReportRecord = result
+            let record: ReportRecord = result
                 .wrap_err("failed to parse line")
                 .suggestion("make sure that the file is a Kraken2 report")?;
 

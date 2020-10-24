@@ -1,5 +1,5 @@
 use crate::parse_ident_organism_name;
-use crate::KrakenReportRecord;
+use crate::ReportRecord;
 use color_eyre::Report;
 use core::convert::TryFrom;
 use std::fmt::Display;
@@ -27,11 +27,11 @@ impl IndentOrganism {
     }
 }
 
-impl TryFrom<KrakenReportRecord> for IndentOrganism {
+impl TryFrom<ReportRecord> for IndentOrganism {
     type Error = Report;
 
     #[instrument]
-    fn try_from(value: KrakenReportRecord) -> Result<Self, Self::Error> {
+    fn try_from(value: ReportRecord) -> Result<Self, Self::Error> {
         let (_, (indent, name)) = parse_ident_organism_name(value.5.as_bytes()).unwrap();
 
         let organism_tree = Organism {
@@ -50,13 +50,13 @@ impl TryFrom<KrakenReportRecord> for IndentOrganism {
 }
 
 #[derive(Debug, Default)]
-pub struct TaxonomyTree {
+pub struct Tree {
     pub tree: Dag<IndentOrganism, u32, u32>,
     pub origin: NodeIndex,
     pub last_node_added_id: NodeIndex,
 }
 
-impl TaxonomyTree {
+impl Tree {
     pub fn new(origin: IndentOrganism) -> Self {
         let mut tree: Dag<IndentOrganism, u32, u32> = Dag::new();
         let origin = tree.add_node(origin);

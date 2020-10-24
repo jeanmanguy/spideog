@@ -16,19 +16,8 @@ pub fn clean_name<'a, S: Into<Cow<'a, str>>>(input: S) -> Cow<'a, str> {
         let rest = input[first_trouble_character..].chars();
         for c in rest {
             match c {
-                ' ' => output.push_str("_"),
-                '-' => output.push_str("_"),
-                '/' => output.push_str("_"),
-                '=' => {}
-                '.' => {}
-                ':' => output.push_str("_"),
-                ',' => {}
-                '[' => {}
-                ']' => {}
-                '(' => {}
-                ')' => {}
-                '\'' => {}
-                '\"' => {}
+                ' ' | '-' | '/' | ':' => output.push_str("_"),
+                '.' | ',' | '[' | ']' | '(' | ')' | '\'' | '\"' => {}
                 _ => output.push(c),
             }
         }

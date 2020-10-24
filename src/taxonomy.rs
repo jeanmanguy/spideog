@@ -6,14 +6,13 @@ use serde::{Deserialize, Deserializer};
 use std::sync::Mutex;
 use tracing::instrument;
 
-static LAST_TAXONOMY_RANK_PARSED: Lazy<Mutex<Option<TaxonomyRank>>> =
-    Lazy::new(|| Mutex::new(None));
+static LAST_TAXONOMY_RANK_PARSED: Lazy<Mutex<Option<Rank>>> = Lazy::new(|| Mutex::new(None));
 
 /// Taxonomy levels
 ///
 /// the u32 offset represents sub-clade (e.g. parvorder, subfamily, etc.)
 #[derive(Clone, PartialEq, Debug, PartialOrd, Ord, Eq, Hash, Copy)]
-pub enum TaxonomyRank {
+pub enum Rank {
     Unclassified(u32),
     Root(u32),
     Domain(u32),
@@ -27,7 +26,7 @@ pub enum TaxonomyRank {
 }
 
 // TODO: order D1 as below of any R0..9
-impl Display for TaxonomyRank {
+impl Display for Rank {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Unclassified(i) => write!(f, "U{}", i),
@@ -44,7 +43,7 @@ impl Display for TaxonomyRank {
     }
 }
 
-impl TaxonomyRank {
+impl Rank {
     pub fn plus_one(self) -> Self {
         match self {
             Self::Unclassified(i) => Self::Unclassified(i.checked_add(1).unwrap()),
@@ -62,8 +61,8 @@ impl TaxonomyRank {
 }
 
 #[instrument]
-pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
-    // TODO: add previous tax rank here, make it pure
+pub fn parse_taxonomy_level(string: &str) -> Result<Rank, ErrorKind> {
+    // TODO: add previous tax rank here, make it purely functional
     if string.len() > 2 {
         return Err(ErrorKind::TaxRankParsingInvalidLength(
             String::from(string),
@@ -89,16 +88,16 @@ pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
     };
 
     let tax_rank = match letter {
-        'U' => Ok(TaxonomyRank::Unclassified(offset)),
-        'R' => Ok(TaxonomyRank::Root(offset)),
-        'D' => Ok(TaxonomyRank::Domain(offset)),
-        'K' => Ok(TaxonomyRank::Kingdom(offset)),
-        'P' => Ok(TaxonomyRank::Phylum(offset)),
-        'C' => Ok(TaxonomyRank::Class(offset)),
-        'O' => Ok(TaxonomyRank::Order(offset)),
-        'F' => Ok(TaxonomyRank::Family(offset)),
-        'G' => Ok(TaxonomyRank::Genus(offset)),
-        'S' => Ok(TaxonomyRank::Species(offset)),
+        'U' => Ok(Rank::Unclassified(offset)),
+        'R' => Ok(Rank::Root(offset)),
+        'D' => Ok(Rank::Domain(offset)),
+        'K' => Ok(Rank::Kingdom(offset)),
+        'P' => Ok(Rank::Phylum(offset)),
+        'C' => Ok(Rank::Class(offset)),
+        'O' => Ok(Rank::Order(offset)),
+        'F' => Ok(Rank::Family(offset)),
+        'G' => Ok(Rank::Genus(offset)),
+        'S' => Ok(Rank::Species(offset)),
         '-' => {
             if let Some(previous_tax_rank) = *LAST_TAXONOMY_RANK_PARSED.lock().unwrap() {
                 // TODO: there has to be a better way to do that, maybe without the mutex business
@@ -123,7 +122,7 @@ pub fn parse_taxonomy_level(string: &str) -> Result<TaxonomyRank, ErrorKind> {
     Ok(tax_rank)
 }
 
-impl<'de> Deserialize<'de> for TaxonomyRank {
+impl<'de> Deserialize<'de> for Rank {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -149,34 +148,31 @@ mod tests {
 
     #[test]
     fn test_order_taxonomy() {
-        assert!(TaxonomyRank::Domain(0) > TaxonomyRank::Root(1));
-        assert!(TaxonomyRank::Domain(1) > TaxonomyRank::Domain(0))
+        assert!(Rank::Domain(0) > Rank::Root(1));
+        assert!(Rank::Domain(1) > Rank::Domain(0))
     }
 
-    #[test_case("U", TaxonomyRank::Unclassified(0); "ok_U")]
-    #[test_case("U1", TaxonomyRank::Unclassified(1); "ok_U1")]
-    #[test_case("R", TaxonomyRank::Root(0); "ok_R")]
-    #[test_case("R1", TaxonomyRank::Root(1); "ok_R1")]
-    #[test_case("P", TaxonomyRank::Phylum(0); "ok_P")]
-    #[test_case("P1", TaxonomyRank::Phylum(1); "ok_P1")]
-    #[test_case("C", TaxonomyRank::Class(0); "ok_C")]
-    #[test_case("C1", TaxonomyRank::Class(1); "ok_C1")]
-    #[test_case("O", TaxonomyRank::Order(0); "ok_O")]
-    #[test_case("O1", TaxonomyRank::Order(1); "ok_O1")]
-    #[test_case("F", TaxonomyRank::Family(0); "ok_F")]
-    #[test_case("F1", TaxonomyRank::Family(1); "ok_F1")]
-    #[test_case("S", TaxonomyRank::Species(0); "ok_S")]
-    #[test_case("S1", TaxonomyRank::Species(1); "ok_S1")]
-    fn test_parse_tax_level(input: &str, expected: TaxonomyRank) {
+    #[test_case("U", Rank::Unclassified(0); "ok_U")]
+    #[test_case("U1", Rank::Unclassified(1); "ok_U1")]
+    #[test_case("R", Rank::Root(0); "ok_R")]
+    #[test_case("R1", Rank::Root(1); "ok_R1")]
+    #[test_case("P", Rank::Phylum(0); "ok_P")]
+    #[test_case("P1", Rank::Phylum(1); "ok_P1")]
+    #[test_case("C", Rank::Class(0); "ok_C")]
+    #[test_case("C1", Rank::Class(1); "ok_C1")]
+    #[test_case("O", Rank::Order(0); "ok_O")]
+    #[test_case("O1", Rank::Order(1); "ok_O1")]
+    #[test_case("F", Rank::Family(0); "ok_F")]
+    #[test_case("F1", Rank::Family(1); "ok_F1")]
+    #[test_case("S", Rank::Species(0); "ok_S")]
+    #[test_case("S1", Rank::Species(1); "ok_S1")]
+    fn test_parse_tax_level(input: &str, expected: Rank) {
         assert_eq!(parse_taxonomy_level(input).unwrap(), expected);
     }
 
     #[test]
     fn test_plus_one() {
-        assert_eq!(
-            TaxonomyRank::Kingdom(2).plus_one(),
-            TaxonomyRank::Kingdom(3)
-        )
+        assert_eq!(Rank::Kingdom(2).plus_one(), Rank::Kingdom(3))
     }
 
     #[test]

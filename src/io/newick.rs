@@ -4,9 +4,9 @@ use eyre::ContextCompat;
 use std::io;
 use tracing::instrument;
 
-use crate::{tree::TaxonomyTree, utils::clean_name};
+use crate::{tree::Tree, utils::clean_name};
 
-pub fn write_newick<W>(writer: &mut W, tree: TaxonomyTree) -> Result<(), Report>
+pub fn write_newick<W>(writer: &mut W, tree: Tree) -> Result<(), Report>
 where
     W: std::io::Write,
 {
@@ -46,7 +46,7 @@ fn format_end() -> String {
 
 pub fn write_children_recursively<W>(
     writer: &mut W,
-    tree: &TaxonomyTree,
+    tree: &Tree,
     node: NodeIndex,
     parent_indent: usize,
 ) -> Result<(), Report>

@@ -7,7 +7,7 @@ use std::{ffi::OsStr, fs::File, fs::OpenOptions, io, path::PathBuf};
 use tracing::instrument;
 
 use self::{newick::write_newick, report::ParseKrakenReport};
-use crate::tree::TaxonomyTree;
+use crate::tree::Tree;
 
 pub mod newick;
 pub mod report;
@@ -22,12 +22,12 @@ custom_derive! {
     }
 }
 
-pub fn read_report_tree<P>(path: P, headers: bool) -> Result<TaxonomyTree, Report>
+pub fn read_report_tree<P>(path: P, headers: bool) -> Result<Tree, Report>
 where
     P: Into<PathBuf>,
 {
     #[instrument]
-    fn internal_read_report_tree(path: PathBuf, headers: bool) -> Result<TaxonomyTree, Report> {
+    fn internal_read_report_tree(path: PathBuf, headers: bool) -> Result<Tree, Report> {
         let mut reader = get_reader(&path, headers)
             .wrap_err_with(|| format!("Failed to read file `{}`", path.display()))?;
         ParseKrakenReport::parse(&mut reader)
@@ -62,7 +62,7 @@ pub fn get_output_file_name(input: &PathBuf, prefix: &Option<String>) -> PathBuf
 }
 
 pub fn write_tree(
-    tree: TaxonomyTree,
+    tree: Tree,
     output: &PathBuf,
     format: &OutputTreeFormat,
     overwrite: bool,
