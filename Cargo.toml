@@ -43,7 +43,6 @@ test-case = "1.0"
 elapsed = "0.1"
 
 
-
 [profile.dev]
 panic = "unwind"
 
@@ -54,6 +53,11 @@ opt-level = 3
 lto = true
 panic = "unwind"
 codegen-units = 1
+
+
+[package.metadata.release]
+disable-publish = true
+consolidate-commits = true
 
 [[package.metadata.release.pre-release-replacements]]
 file = "CHANGELOG.md"
