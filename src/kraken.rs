@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
-use crate::taxonomy::TaxonomyRank;
+use crate::taxonomy::Rank;
 
-pub type KrakenReportRecord = (String, u64, u64, TaxonomyRank, u64, String);
+pub type ReportRecord = (String, u64, u64, Rank, u64, String);
 
 // pub struct KrakenReportRecord {
 //     pub percentage: String,
@@ -13,12 +13,12 @@ pub type KrakenReportRecord = (String, u64, u64, TaxonomyRank, u64, String);
 //     pub indented_name: String,
 // }
 
-pub type KrakenIndent = usize;
+pub type Indent = usize;
 
 #[derive(Clone, PartialEq, PartialOrd, Debug, Ord, Eq, Hash, Deserialize)]
 pub struct Organism {
     #[serde(rename = "taxonomy_lvl")]
-    pub taxonomy_level: TaxonomyRank,
+    pub taxonomy_level: Rank,
     pub name: String,
     pub taxonomy_id: u64,
 }
@@ -34,9 +34,8 @@ impl Display for Organism {
 }
 
 #[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
-pub struct KrakenFragments {
+pub struct Fragments {
     pub percentage: f64,
     pub count_clade: u64,
     pub count_taxon: u64,
 }
-

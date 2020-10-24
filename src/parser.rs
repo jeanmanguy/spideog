@@ -1,6 +1,6 @@
 use nom::IResult;
 
-use crate::kraken::KrakenIndent;
+use crate::kraken::Indent;
 
 pub fn spaces_and_rest(input: &[u8]) -> IResult<&[u8], Vec<&[u8]>> {
     nom::multi::fold_many0(
@@ -13,7 +13,7 @@ pub fn spaces_and_rest(input: &[u8]) -> IResult<&[u8], Vec<&[u8]>> {
     )(input)
 }
 
-pub fn parse_ident_organism_name(input: &[u8]) -> IResult<&[u8], (KrakenIndent, &[u8])> {
+pub fn parse_ident_organism_name(input: &[u8]) -> IResult<&[u8], (Indent, &[u8])> {
     let (name, spaces) = spaces_and_rest(input).unwrap();
 
     Ok((&[], (spaces.len(), name)))

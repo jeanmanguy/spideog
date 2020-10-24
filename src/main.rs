@@ -26,7 +26,7 @@ use cli::{subcommands::Command, Opts};
 use color_eyre::eyre::Report;
 use displaydoc::Display;
 use io::{get_output_file_name, read_report_tree, write_tree};
-use kraken::KrakenReportRecord;
+use kraken::ReportRecord;
 use parser::parse_ident_organism_name;
 use thiserror::Error;
 use tracing::{info, instrument};
@@ -37,7 +37,7 @@ pub enum ErrorKind {
     /// expected root with no indentation, found indentation level: `{0}`
     NonZeroIndentRoot(usize),
     /// no suitable parent found for node `{0}` of indent `{1}` and rank `{2}`
-    NoSuitableParent(String, usize, taxonomy::TaxonomyRank),
+    NoSuitableParent(String, usize, taxonomy::Rank),
     /// no node added to the tree
     NoNodeAdded,
     /// failed to parse line `{0}`
