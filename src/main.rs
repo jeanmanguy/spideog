@@ -88,18 +88,21 @@ fn main() -> Result<(), Report> {
     let opts: Opts = Opts::parse();
     // opts.logging.setup().wrap_err("Failed to setup logging.")?;
 
+    dbg!(&opts);
+
     match opts.command {
-        Command::Tree(sub_opts) => {
-            info!("subcommand `tree`");
-            // TODO check all files exists, gather errors with eyre
-            // https://github.com/yaahc/color-eyre/blob/master/examples/multiple_errors.rs
-            for report in &sub_opts.files.reports {
-                let tree = read_report_tree(report, sub_opts.headers)?;
-                let output_path = get_output_file_name(report, &sub_opts.prefix);
-                info!("will write output to `{}`", &output_path.display());
-                write_tree(tree, &output_path, &sub_opts.format, sub_opts.overwrite)?;
-            }
-        }
+        // Command::Tree(sub_opts) => {
+        //     info!("subcommand `tree`");
+        //     // TODO check all files exists, gather errors with eyre
+        //     // https://github.com/yaahc/color-eyre/blob/master/examples/multiple_errors.rs
+        //     for report in &sub_opts.files.reports {
+        //         let tree = read_report_tree(report, sub_opts.headers)?;
+        //         let output_path = get_output_file_name(report, &sub_opts.prefix);
+        //         info!("will write output to `{}`", &output_path.display());
+        //         write_tree(tree, &output_path, &sub_opts.format, sub_opts.overwrite)?;
+        //     }
+        // }
+        _ => {}
     }
 
     Ok(())

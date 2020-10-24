@@ -3,6 +3,8 @@ pub mod error;
 pub mod logging;
 pub mod subcommands;
 
+use std::path::PathBuf;
+
 use clap::AppSettings;
 
 #[derive(Debug, Clap)]
@@ -19,6 +21,6 @@ use clap::AppSettings;
 pub struct Opts {
     #[clap(subcommand)]
     pub command: subcommands::Command,
-    #[clap(flatten)]
-    pub logging: logging::Logging,
+    // #[clap(flatten)]
+    // pub logging: logging::Logging,
 }
