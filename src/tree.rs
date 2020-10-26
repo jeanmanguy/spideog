@@ -94,3 +94,7 @@ impl Tree {
         parent_id
     }
 }
+
+pub trait TaxonomyTreeReader<T>: Sized {
+    fn read(_: T) -> Result<Self, Report>;
+}

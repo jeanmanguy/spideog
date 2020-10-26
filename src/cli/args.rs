@@ -8,31 +8,98 @@ use std::path::PathBuf;
 //     pub reports: Vec<PathBuf>,
 // }
 
-#[derive(Clap, Debug, Clone)]
+// #[derive(Clap, Debug, PartialEq)]
+// pub enum ExtractKind {
+//     #[clap(alias = "p")]
+//     Phylo,
+//     #[clap(alias = "d")]
+//     Data,
+// }
+
+// #[derive(Clap, Debug)]
+// pub struct ExtractKind2 {
+//     /// Extract taxonomy tree
+//     #[clap(long, conflicts_with("data"))]
+//     phylo: bool,
+//     /// extract data
+//     #[clap(long, conflicts_with("phylo"))]
+//     data: bool
+// }
+
+// #[derive(Clap, Debug)]
+// pub struct Extract {
+//     #[clap(arg_enum, name = "kind", case_insensitive(true))]
+//     pub kind: ExtractKind
+// }
+
+#[derive(Clap, Debug)]
 pub struct SingleReport {
-    /// a single Kraken report
-    #[clap(name = "FILE", parse(from_os_str), value_hint = ValueHint::AnyPath, required(true), multiple(false), takes_value(true), last(true))]
-    pub report: PathBuf,
+    /// A single Kraken report
+    #[clap(name = "FILE", parse(from_os_str), value_hint = ValueHint::AnyPath, required(true), multiple(false), takes_value(true))]
+    pub path: PathBuf,
+    /// Input report format
+    #[clap(long = "report-format", name = "report-format", arg_enum, case_insensitive(true), global(true), default_value("Kraken"))]
+    pub format: crate::io::InputReportFormat,
+    /// Does the kraken report has headers
+    #[clap(long = "has-headers", takes_value(false))]
+    pub headers: bool
 }
 
-#[derive(Clap, Debug, Clone)]
+#[derive(Clap, Debug)]
 pub struct MultipleReports {
-    /// multiple Kraken reports
-    #[clap(name = "FILES", parse(from_os_str), value_hint = ValueHint::AnyPath, required(true), multiple(true), takes_value(true), last(true))]
-    pub reports: Vec<PathBuf>,
+    /// Multiple Kraken reports
+    #[clap(name = "FILES", parse(from_os_str), value_hint = ValueHint::AnyPath, required(true), multiple(true), takes_value(true))]
+    pub paths: Vec<PathBuf>,
+    /// Input reports format (all reports must have the format)
+    #[clap(long = "report-format", name = "report-format", arg_enum, case_insensitive(true), global(true), default_value("Kraken"))]
+    pub format: crate::io::InputReportFormat,
 }
 
-#[derive(Clap, Debug, Clone)]
-pub struct Output {
-    /// output path
-    #[clap(name = "output", long = "output", short = 'o', parse(from_os_str), value_hint = ValueHint::AnyPath, takes_value(true))]
+#[derive(Clap, Debug)]
+pub struct OutputFile {
+    /// Output file [default: stdout (-)]
+    #[clap(
+        name = "output", 
+        global(true), 
+        long = "output", 
+        parse(from_os_str), 
+        value_hint = ValueHint::AnyPath, 
+        takes_value(true),
+    )]
     pub path: Option<PathBuf>,
-    /// force overwriting exiting file
-    #[clap(long, requires("output"))]
+    /// force overwriting exiting output file
+    #[clap(
+        long, 
+        requires("output"), 
+        global(true),
+    )]
     pub overwrite: bool,
 }
 
-pub enum OutputKind {
-    File(PathBuf),
-    Stdout,
+#[derive(Clap, Debug)]
+pub struct InputReport {
+    /// Input report format
+    #[clap(long = "report-format", name = "report-format", arg_enum, case_insensitive(true), global(true), default_value("Kraken"))]
+    pub format: crate::io::InputReportFormat,
 }
+
+#[derive(Clap, Debug)]
+pub struct OutputPhylo {
+    #[clap(flatten)]
+    pub file: OutputFile,
+    /// Output tree format
+    #[clap(long = "format", name = "output-format", arg_enum, case_insensitive(true), default_value("Newick"))]
+    pub format: crate::io::OutputPhyloFormat,
+}
+
+
+#[derive(Clap, Debug)]
+pub struct OutputAbundance {
+    #[clap(flatten)]
+    pub file: OutputFile,
+    /// Output abundance format
+    #[clap(long = "format", name = "output-format", arg_enum, case_insensitive(true), default_value("csv"))]
+    pub format: crate::io::OutputAbundanceFormat,
+}
+
+

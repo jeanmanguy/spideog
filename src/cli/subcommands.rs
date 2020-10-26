@@ -1,116 +1,71 @@
-use crate::io::OutputTreeFormat;
-
-use super::args::{MultipleReports, Output, SingleReport};
+use super::args::{MultipleReports, OutputAbundance, OutputPhylo, SingleReport};
 #[derive(Clap, Debug)]
 #[non_exhaustive]
 pub enum Command {
-    // Tree(Tree),
     Info(Info),
-    Convert(Convert),
-    Merge(Merge),
+    ConvertPhylo(ConvertPhylo),
+    ConvertAbundance(ConvertAbundance),
+    MergePhylo(MergePhylo),
+    MergeAbundance(MergeAbundance),
     Track(Track),
-}
-
-// /// (deprecated) Extract and convert the taxonomy tree from Kracken reports
-// ///
-// /// Export trees to *.tree files using the name of the original files.
-// /// A prefix can be added using the `--prefix` option.
-// #[derive(Clap, Debug)]
-// pub struct Tree {
-//     /// Report don't have headers
-//     #[clap(long = "has-headers")]
-//     pub headers: bool,
-//     /// Output taxonomy format
-//     #[clap(
-//         name = "tree-format",
-//         long = "tree-format",
-//         short = 'f',
-//         default_value = "newick"
-//     )]
-//     #[clap(arg_enum, case_insensitive(true))]
-//     pub format: OutputTreeFormat,
-//     /// Prefix for the output files
-//     #[clap(name = "prefix", long = "prefix", short = 'p')]
-//     pub prefix: Option<String>,
-//     /// Flag to force overwriting of output files
-//     #[clap(long)]
-//     pub overwrite: bool,
-//     #[clap(flatten)]
-//     pub files: KrakenReport,
-// }
-
-/// Conversion from a report to a table format of tree format
-#[derive(Clap, Debug)]
-pub struct Convert {
-    #[clap(subcommand)]
-    kind: Option<ConvertKind>,
 }
 
 /// Extract diverse information about multiple reports
 #[derive(Clap, Debug)]
+#[clap(after_help = super::AFTER_HELP)]
 pub struct Info {
     #[clap(flatten)]
-    files: MultipleReports,
+    pub input: MultipleReports,
     #[clap(flatten)]
-    output: Output,
-}
-
-/// Merge multiple reports to one table or tree
-#[derive(Clap, Debug)]
-pub struct Merge {
-    #[clap(subcommand)]
-    kind: Option<MergeKind>,
+    pub output: OutputAbundance, // TODO: change
 }
 
 /// Track one or multiple species across multiple reports
 #[derive(Clap, Debug)]
+#[clap(after_help = super::AFTER_HELP)]
 pub struct Track {
     #[clap(flatten)]
-    files: MultipleReports,
+    pub input: MultipleReports,
+    #[clap(flatten)]
+    pub output: OutputAbundance, // TODO: change
 }
 
+/// Convert one report to one taxonomy tree
 #[derive(Clap, Debug)]
-#[non_exhaustive]
-pub enum ConvertKind {
-    Phylo(ConvertPhylo),
-    Data(ConvertData),
-}
-
-#[derive(Clap, Debug)]
-#[non_exhaustive]
-pub enum MergeKind {
-    Phylo(MergePhylo),
-    Data(MergeData),
-}
-
-#[derive(Clap, Debug)]
+#[clap(after_help = super::AFTER_HELP)]
 pub struct ConvertPhylo {
     #[clap(flatten)]
-    file: SingleReport,
+    pub input: SingleReport,
     #[clap(flatten)]
-    output: Output,
+    pub output: OutputPhylo,
 }
 
+/// Convert one report to one abundance table
 #[derive(Clap, Debug)]
-pub struct ConvertData {
+#[clap(after_help = super::AFTER_HELP)]
+pub struct ConvertAbundance {
     #[clap(flatten)]
-    file: SingleReport,
+    pub input: SingleReport,
     #[clap(flatten)]
-    output: Output,
+    pub output: OutputAbundance,
 }
 
+/// Merge multiple reports to one taxonomy tree
 #[derive(Clap, Debug)]
+#[clap(after_help = super::AFTER_HELP)]
 pub struct MergePhylo {
     #[clap(flatten)]
-    file: MultipleReports,
+    pub input: MultipleReports,
     #[clap(flatten)]
-    output: Output,
+    pub output: OutputPhylo,
 }
 
+/// Merge multiple reports to one abundance table
 #[derive(Clap, Debug)]
-pub struct MergeData {
+#[clap(after_help = super::AFTER_HELP)]
+pub struct MergeAbundance {
     #[clap(flatten)]
-    file: MultipleReports,
+    pub input: MultipleReports,
     #[clap(flatten)]
-    output: Output,
+    pub output: OutputAbundance,
 }

@@ -16,20 +16,24 @@ mod cli;
 mod io;
 mod kraken;
 mod parser;
+mod subcommands;
 mod taxonomy;
 mod tree;
 mod utils;
 
 use crate::clap::Clap;
+use crate::io::Output;
 use cli::{subcommands::Command, Opts};
 
-use color_eyre::eyre::Report;
+use color_eyre::{eyre::Report, Help};
 use displaydoc::Display;
-use io::{get_output_file_name, read_report_tree, write_tree};
+use eyre::Context;
+use io::{get_reader, read_report_tree, report::ParseKrakenReport};
 use kraken::ReportRecord;
 use parser::parse_ident_organism_name;
 use thiserror::Error;
-use tracing::{info, instrument};
+use tracing::{debug, info, instrument};
+use tree::Tree;
 
 #[derive(Display, Error, Debug)]
 #[non_exhaustive]
@@ -52,6 +56,8 @@ pub enum ErrorKind {
     TaxRankParsingCannotInferRank(String),
     /// node not found
     NodeNotFound,
+    /// parse output error
+    ParseOutputPathError,
     // ///IO error
     // #[error(transparent)]
     // Io(#[from] std::io::Error),
@@ -60,35 +66,12 @@ pub enum ErrorKind {
     // Csv(#[from] csv::Error)
 }
 
-// Boilerplate: https://github.com/yaahc/color-eyre/blob/master/examples/usage.rs
-// TODO: adjust for use
-// TODO: move to logging.rs?
-fn install_tracing() {
-    use tracing_error::ErrorLayer;
-    use tracing_subscriber::prelude::*;
-    use tracing_subscriber::{fmt, EnvFilter};
-
-    let fmt_layer = fmt::layer().with_target(false);
-    let filter_layer = EnvFilter::try_from_default_env()
-        .or_else(|_| EnvFilter::try_new("info"))
-        .unwrap();
-
-    tracing_subscriber::registry()
-        .with(filter_layer)
-        .with(fmt_layer)
-        .with(ErrorLayer::default())
-        .init();
-}
-
 #[instrument]
 fn main() -> Result<(), Report> {
-    install_tracing();
-    cli::error::setup_error_hook()?;
+    cli::install_tracing();
+    cli::setup_error_hook()?;
 
     let opts: Opts = Opts::parse();
-    // opts.logging.setup().wrap_err("Failed to setup logging.")?;
-
-    dbg!(&opts);
 
     match opts.command {
         // Command::Tree(sub_opts) => {
@@ -102,7 +85,57 @@ fn main() -> Result<(), Report> {
         //         write_tree(tree, &output_path, &sub_opts.format, sub_opts.overwrite)?;
         //     }
         // }
-        _ => {}
+        // Command::Info(info) => {
+        //     dbg!(info);
+        // }
+        // Command::Convert(convert) => {
+        //     dbg!(convert);
+        //     //     match convert.kind {
+        //     //     // cli::args::ExtractKind::Phylo => {
+        //     //     //     info!("convert phylo");
+        //     //     //     dbg!(&convert);
+        //     //     //     debug!("{:?}", &convert);
+        //     //     //     let tree = read_report_tree(&convert.file.report, false)?;
+        //     //     //     let mut writer = output.writer()?;
+        //     //     //     // write_tree(tree, &output_path, &sub_opts.format, sub_opts.overwrite)?;
+        //     //     // }
+        //     //     // cli::args::ExtractKind::Data => {
+        //     //     //     info!("convert data");
+        //     //     //     dbg!(convert);
+        //     //     // }
+        //     // }
+        // }
+        // Command::Merge(merge) => {
+        //     dbg!(merge);
+        // }
+        // Command::Track(track) => {
+        //     dbg!(track);
+        // }
+        Command::ConvertPhylo(args) => {
+            args.run().wrap_err("Failed to convert taxonomy tree")?;
+            // dbg!(&args);
+            // debug!("checking if input file is readable");
+            // let input = args.input.path;
+            // let mut reader = get_reader(&input, false)
+            //     .wrap_err_with(|| format!("Failed to read file `{}`", &input.display()))?;
+
+            // debug!("checking if output file is writtable");
+            // let output = Output::from(args.output.file);
+            // output.try_writtable()?;
+
+            // debug!("reading tree");
+
+            // let tree: Tree = ParseKrakenReport::parse(&mut reader)
+            //     .wrap_err_with(|| format!("Failed to parse file `{}`", &input.display()))
+            //     .suggestion(
+            //         "Try using the `--has-headers` option if your Kraken report has headers",
+            //     )?;
+
+            // todo!()
+        }
+        _ => {
+            dbg!("hello");
+        }
     }
 
     Ok(())

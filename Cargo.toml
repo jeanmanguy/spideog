@@ -3,7 +3,7 @@ name = "spideog"
 version = "0.1.2-alpha.0"
 authors = ["Jean Manguy <jean@manguy.eu>"]
 edition = "2018"
-description = "Command line utility to visualize and analyze metagenomics classification from Kraken and Bracken"
+description = "Command line utility to analyse and convert Kraken reports"
 publish = false
 readme = "README.md"
 repository = "https://github.com/jeanmanguy/spideog"
@@ -19,8 +19,8 @@ thiserror = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 csv = "1"
 color-eyre = { version = "0.5", features = ["issue-url"] }
-clap = { version = "~3.0.0-beta.1", default-features = false, features = [ "wrap_help", "derive", "suggestions", "color", "std" ] }
-clap_generate = "3.0.0-beta.1"
+clap = { version = "~3.0.0-beta.2", default-features = false, features = [ "derive", "suggestions", "color", "std" ] }
+clap_generate = "3.0.0-beta.2"
 nom = { version = "5.1", features = ["regexp"]} # do I need regexp?
 daggy = "0.7"
 petgraph = "0.5"
