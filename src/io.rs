@@ -21,21 +21,6 @@ custom_derive! {
     }
 }
 
-// pub fn read_report_tree<P>(path: P, headers: bool) -> Result<Tree, Report>
-// where
-//     P: Into<PathBuf>,
-// {
-//     #[instrument]
-//     fn internal_read_report_tree(path: PathBuf, headers: bool) -> Result<Tree, Report> {
-//         let mut reader = get_reader(&path, headers)
-//             .wrap_err_with(|| format!("Failed to read file `{}`", path.display()))?;
-//         ParseKrakenReport::parse(&mut reader)
-//             .wrap_err_with(|| format!("Failed to parse file `{}`", path.display()))
-//             .suggestion("Try using the `--has-headers` option if your Kraken report has headers")
-//     }
-//     internal_read_report_tree(path.into(), headers)
-// }
-
 #[instrument]
 pub fn get_reader(input: &PathBuf, headers: bool) -> Result<Reader<File>, csv::Error> {
     csv::ReaderBuilder::new()

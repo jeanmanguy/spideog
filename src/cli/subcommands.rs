@@ -17,7 +17,7 @@ pub struct Info {
     #[clap(flatten)]
     pub input: MultipleReports,
     #[clap(flatten)]
-    pub output: OutputAbundance, // TODO: change
+    pub output: OutputAbundance,
 }
 
 /// Track one or multiple species across multiple reports
@@ -27,7 +27,7 @@ pub struct Track {
     #[clap(flatten)]
     pub input: MultipleReports,
     #[clap(flatten)]
-    pub output: OutputAbundance, // TODO: change
+    pub output: OutputAbundance,
 }
 
 /// Convert one report to one taxonomy tree
@@ -71,5 +71,5 @@ pub struct MergeAbundance {
 }
 
 pub trait Runner {
-    fn run(self) -> Result<(), color_eyre::eyre::Report>; // Could later use args: &MainArgs
+    fn run(self) -> Result<(), color_eyre::eyre::Report>;
 }
