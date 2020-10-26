@@ -1,8 +1,3 @@
-use std::{
-    fs::{File, OpenOptions},
-    path::PathBuf,
-};
-
 use color_eyre::{Help, Report};
 use eyre::Context;
 use tracing::instrument;
