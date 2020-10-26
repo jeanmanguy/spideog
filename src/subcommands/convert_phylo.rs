@@ -5,13 +5,13 @@ use std::{
 
 use color_eyre::{Help, Report};
 use eyre::Context;
-use tracing::{debug, instrument};
+use tracing::instrument;
 
 use crate::{
     cli::subcommands::{ConvertPhylo, Runner},
     io::newick::write_newick,
     io::open_file,
-    io::{get_reader, report::ParseKrakenReport, Output},
+    io::{report::ParseKrakenReport, Output},
     tree::Tree,
 };
 

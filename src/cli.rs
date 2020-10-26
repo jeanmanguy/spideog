@@ -5,8 +5,6 @@ pub mod subcommands;
 use clap::AppSettings;
 use color_eyre::{Report, Result};
 
-use self::args::OutputFile;
-
 static AFTER_HELP: &str = "Thank you for using Spideog. Please send any feedback, bug report or feature request to the project's github page: https://github.com/jeanmanguy/spideog";
 
 #[derive(Debug, Clap)]

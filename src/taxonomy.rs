@@ -74,20 +74,21 @@ pub fn parse_taxonomy_level(string: &str) -> Result<Rank, ErrorKind> {
 
     let letter = string_chars.next().unwrap();
 
-    let offset: u32 = if let Some(number) = string_chars.next() {
-        if number.is_ascii_digit() {
-            number.to_digit(10_u32).unwrap()
-        } else {
-            return Err(ErrorKind::TaxRankParsingOfffsetNotANumber(
-                String::from(string),
-                number,
-            ));
-        }
-    } else {
-        0_u32
-    };
+    let offset: u32 =
+        string_chars
+            .next()
+            .map_or(Ok(0_u32), |number| -> Result<u32, crate::ErrorKind> {
+                if number.is_ascii_digit() {
+                    Ok(number.to_digit(10_u32).unwrap())
+                } else {
+                    Err(ErrorKind::TaxRankParsingOfffsetNotANumber(
+                        String::from(string),
+                        number,
+                    ))
+                }
+            })?;
 
-    let tax_rank = match letter {
+    let tax_rank: Rank = match letter {
         'U' => Ok(Rank::Unclassified(offset)),
         'R' => Ok(Rank::Root(offset)),
         'D' => Ok(Rank::Domain(offset)),
@@ -99,22 +100,21 @@ pub fn parse_taxonomy_level(string: &str) -> Result<Rank, ErrorKind> {
         'G' => Ok(Rank::Genus(offset)),
         'S' => Ok(Rank::Species(offset)),
         '-' => {
-            if let Some(previous_tax_rank) = *LAST_TAXONOMY_RANK_PARSED.lock().unwrap() {
-                // TODO: there has to be a better way to do that, maybe without the mutex business
-                Ok(previous_tax_rank.plus_one())
-            } else {
-                Err(ErrorKind::TaxRankParsingCannotInferRank(String::from(
-                    string,
-                )))
-            }
+            // TODO: there has to be a better way to do that, maybe without the mutex business
+            (*LAST_TAXONOMY_RANK_PARSED.lock().unwrap()).map_or_else(
+                || {
+                    Err(ErrorKind::TaxRankParsingCannotInferRank(String::from(
+                        string,
+                    )))
+                },
+                |x| -> Result<Rank, crate::ErrorKind> { Ok(x.plus_one()) },
+            )
         }
         _ => Err(ErrorKind::TaxRankParsingInvalidRankCode(
             String::from(string),
             letter,
         )),
     }?;
-
-    // let tax_rank2: Option<TaxonomyRank> =
 
     let mut old_tax_rank = LAST_TAXONOMY_RANK_PARSED.lock().unwrap();
     *old_tax_rank = Some(tax_rank);
