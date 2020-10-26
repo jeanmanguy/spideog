@@ -1,18 +1,21 @@
 use color_eyre::{eyre::Context, Help, Report};
 use core::convert::TryFrom;
 use csv::Reader;
+use libspideog::{
+    errors::SpideogError,
+    kraken::ReportRecord,
+    tree::{IndentOrganism, Tree},
+};
 use std::fs::File;
 use tracing::instrument;
-
-use crate::{kraken::ReportRecord, tree::IndentOrganism, tree::Tree};
 
 pub trait ParseKrakenReport: Sized {
     fn parse(reader: &mut Reader<File>) -> Result<Self, Report>;
 }
 
 fn parse_origin_tree(first_line: Option<Result<ReportRecord, csv::Error>>) -> Result<Tree, Report> {
-    let first_line = first_line.ok_or(crate::ErrorKind::EmptyFile)?;
-    let first_record: ReportRecord = first_line.map_err(crate::ErrorKind::CsvParser)?;
+    let first_line = first_line.ok_or(SpideogError::EmptyFile)?;
+    let first_record: ReportRecord = first_line.map_err(SpideogError::CsvParser)?;
     let origin = IndentOrganism::try_from(first_record)?;
     let taxonomy_tree = Tree::new(origin);
     Ok(taxonomy_tree)

@@ -1,10 +1,11 @@
-use crate::ErrorKind;
 use std::fmt::Display;
 
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Deserializer};
 use std::sync::Mutex;
 use tracing::instrument;
+
+use crate::errors::TaxRankParsingError;
 
 static LAST_TAXONOMY_RANK_PARSED: Lazy<Mutex<Option<Rank>>> = Lazy::new(|| Mutex::new(None));
 
@@ -44,6 +45,7 @@ impl Display for Rank {
 }
 
 impl Rank {
+    #[must_use]
     pub fn plus_one(self) -> Self {
         match self {
             Self::Unclassified(i) => Self::Unclassified(i.checked_add(1).unwrap()),
@@ -61,10 +63,10 @@ impl Rank {
 }
 
 #[instrument]
-pub fn parse_taxonomy_level(string: &str) -> Result<Rank, ErrorKind> {
+pub fn parse_taxonomy_level(string: &str) -> Result<Rank, TaxRankParsingError> {
     // TODO: add previous tax rank here, make it purely functional
     if string.len() > 2 {
-        return Err(ErrorKind::TaxRankParsingInvalidLength(
+        return Err(TaxRankParsingError::InvalidLength(
             String::from(string),
             string.len(),
         ));
@@ -77,11 +79,11 @@ pub fn parse_taxonomy_level(string: &str) -> Result<Rank, ErrorKind> {
     let offset: u32 =
         string_chars
             .next()
-            .map_or(Ok(0_u32), |number| -> Result<u32, crate::ErrorKind> {
+            .map_or(Ok(0_u32), |number| -> Result<u32, TaxRankParsingError> {
                 if number.is_ascii_digit() {
                     Ok(number.to_digit(10_u32).unwrap())
                 } else {
-                    Err(ErrorKind::TaxRankParsingOfffsetNotANumber(
+                    Err(TaxRankParsingError::OffsetNotANumber(
                         String::from(string),
                         number,
                     ))
@@ -103,14 +105,14 @@ pub fn parse_taxonomy_level(string: &str) -> Result<Rank, ErrorKind> {
             // TODO: there has to be a better way to do that, maybe without the mutex business
             (*LAST_TAXONOMY_RANK_PARSED.lock().unwrap()).map_or_else(
                 || {
-                    Err(ErrorKind::TaxRankParsingCannotInferRank(String::from(
-                        string,
-                    )))
+                    Err(TaxRankParsingError::TaxRankParsingCannotInferRank(
+                        String::from(string),
+                    ))
                 },
-                |x| -> Result<Rank, crate::ErrorKind> { Ok(x.plus_one()) },
+                |x| -> Result<Rank, TaxRankParsingError> { Ok(x.plus_one()) },
             )
         }
-        _ => Err(ErrorKind::TaxRankParsingInvalidRankCode(
+        _ => Err(TaxRankParsingError::InvalidRankCode(
             String::from(string),
             letter,
         )),

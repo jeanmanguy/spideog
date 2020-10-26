@@ -1,12 +1,13 @@
 use color_eyre::Report;
 use daggy::{NodeIndex, Walker};
 use eyre::ContextCompat;
+use libspideog::tree::Tree;
 use std::io;
 use tracing::instrument;
 
-use crate::{tree::Tree, utils::clean_name};
+use crate::utils::clean_name;
 
-pub fn write_newick<W>(writer: &mut W, tree: Tree) -> Result<(), Report>
+pub fn write_newick<W>(writer: &mut W, tree: &Tree) -> Result<(), Report>
 where
     W: std::io::Write,
 {

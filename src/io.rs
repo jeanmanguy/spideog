@@ -6,6 +6,8 @@ use std::process;
 use std::{fs::File, fs::OpenOptions, io, path::PathBuf};
 use tracing::instrument;
 
+use crate::BinError;
+
 pub mod newick;
 pub mod report;
 
@@ -50,7 +52,7 @@ pub fn open_file(path: &PathBuf) -> Result<File, Report> {
         .read(true)
         .write(false)
         .open(path)
-        .map_err(crate::ErrorKind::Io)?;
+        .map_err(BinError::Io)?;
 
     Ok(reader)
 }

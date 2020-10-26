@@ -1,5 +1,3 @@
-use crate::parse_ident_organism_name;
-use crate::ReportRecord;
 use color_eyre::Report;
 use core::convert::TryFrom;
 use std::fmt::Display;
@@ -7,7 +5,11 @@ use std::fmt::Display;
 use daggy::{Dag, NodeIndex, Walker};
 use tracing::instrument;
 
-use crate::kraken::Organism;
+use crate::{
+    errors::SpideogError,
+    kraken::{Organism, ReportRecord},
+    parser::parse_ident_organism_name,
+};
 
 #[derive(Debug)]
 pub struct IndentOrganism {
@@ -22,13 +24,14 @@ impl Display for IndentOrganism {
 }
 
 impl IndentOrganism {
-    pub fn inferior_indent(&self, than: &Self) -> bool {
+    #[must_use]
+    pub const fn inferior_indent(&self, than: &Self) -> bool {
         self.indent < than.indent
     }
 }
 
 impl TryFrom<ReportRecord> for IndentOrganism {
-    type Error = crate::ErrorKind;
+    type Error = SpideogError;
 
     #[instrument]
     fn try_from(value: ReportRecord) -> Result<Self, Self::Error> {
@@ -57,6 +60,7 @@ pub struct Tree {
 }
 
 impl Tree {
+    #[must_use]
     pub fn new(origin: IndentOrganism) -> Self {
         let mut tree: Dag<IndentOrganism, u32, u32> = Dag::new();
         let origin = tree.add_node(origin);
@@ -77,6 +81,7 @@ impl Tree {
     }
 
     // find a parent with a lower indent value or default to the origin
+    #[must_use]
     pub fn find_valid_parent_for(&self, organism: &IndentOrganism) -> NodeIndex {
         let mut parent_id = self.origin; // default value
         let mut parent_recursion = self

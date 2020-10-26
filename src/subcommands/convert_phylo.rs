@@ -1,5 +1,6 @@
 use color_eyre::{Help, Report};
 use eyre::Context;
+use libspideog::tree::Tree;
 use tracing::instrument;
 
 use crate::{
@@ -7,7 +8,6 @@ use crate::{
     io::newick::write_newick,
     io::open_file,
     io::{report::ParseKrakenReport, Output},
-    tree::Tree,
 };
 
 impl Runner for ConvertPhylo {
@@ -35,7 +35,7 @@ impl Runner for ConvertPhylo {
         let mut writer = output.writer()?;
 
         match self.output.format {
-            crate::io::OutputPhyloFormat::Newick => write_newick(&mut writer, tree)?,
+            crate::io::OutputPhyloFormat::Newick => write_newick(&mut writer, &tree)?,
         }
 
         Ok(())

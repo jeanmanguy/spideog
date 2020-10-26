@@ -21,7 +21,7 @@ csv = "1"
 color-eyre = { version = "0.5", features = ["issue-url"] }
 clap = { version = "~3.0.0-beta.2", default-features = false, features = [ "derive", "suggestions", "color", "std" ] }
 clap_generate = "3.0.0-beta.2"
-nom = { version = "5.1", features = ["regexp"]} # do I need regexp?
+nom = { version = "5.1"} # do I need regexp?
 daggy = "0.7"
 petgraph = "0.5"
 log = "0.4"
@@ -40,8 +40,14 @@ exitcode = "1.1.2"
 
 [dev-dependencies]
 test-case = "1.0"
-elapsed = "0.1"
 
+[lib]
+name = "libspideog"
+path = "src/lib.rs"
+
+[[bin]]
+name = "spideog"
+path = "src/main.rs"
 
 [profile.dev]
 panic = "unwind"
