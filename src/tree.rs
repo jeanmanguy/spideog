@@ -28,11 +28,11 @@ impl IndentOrganism {
 }
 
 impl TryFrom<ReportRecord> for IndentOrganism {
-    type Error = Report;
+    type Error = crate::ErrorKind;
 
     #[instrument]
     fn try_from(value: ReportRecord) -> Result<Self, Self::Error> {
-        let (_, (indent, name)) = parse_ident_organism_name(value.5.as_bytes()).unwrap();
+        let (_, (indent, name)) = parse_ident_organism_name(value.5.as_bytes()).unwrap(); // TODO: make error here
 
         let organism_tree = Organism {
             taxonomy_level: value.3,

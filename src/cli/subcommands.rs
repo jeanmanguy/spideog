@@ -69,3 +69,7 @@ pub struct MergeAbundance {
     #[clap(flatten)]
     pub output: OutputAbundance,
 }
+
+pub trait Runner {
+    fn run(self) -> Result<(), color_eyre::eyre::Report>; // Could later use args: &MainArgs
+}

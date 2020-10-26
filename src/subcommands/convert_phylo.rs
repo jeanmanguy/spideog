@@ -1,25 +1,27 @@
-use std::fs::OpenOptions;
+use std::{
+    fs::{File, OpenOptions},
+    path::PathBuf,
+};
 
 use color_eyre::{Help, Report};
 use eyre::Context;
 use tracing::{debug, instrument};
 
 use crate::{
-    cli::subcommands::ConvertPhylo,
+    cli::subcommands::{ConvertPhylo, Runner},
+    io::newick::write_newick,
+    io::open_file,
     io::{get_reader, report::ParseKrakenReport, Output},
     tree::Tree,
 };
 
-impl ConvertPhylo {
+impl Runner for ConvertPhylo {
     #[instrument]
-    pub fn run(self) -> Result<(), Report> {
+    fn run(self) -> Result<(), Report> {
         let input = &self.input.path;
 
-        let reader = OpenOptions::new()
-            .read(true)
-            .write(false)
-            .open(input)
-            .wrap_err("cannot read")?;
+        let reader = open_file(input)
+            .wrap_err_with(|| format!("cannot read file `{}`", &input.display()))?;
 
         let mut csv_reader = csv::ReaderBuilder::new()
             .has_headers(self.input.headers)
@@ -32,8 +34,14 @@ impl ConvertPhylo {
         output.try_writtable()?;
 
         let tree: Tree = ParseKrakenReport::parse(&mut csv_reader)
-            .wrap_err_with(|| format!("Failed to parse file `{}`", &input.display()))
-            .suggestion("Try using the `--has-headers` option if your Kraken report has headers")?;
+            .wrap_err_with(|| format!("failed to parse file `{}`", &input.display()))
+            .suggestion("try using the `--has-headers` option if your Kraken report has headers")?;
+
+        let mut writer = output.writer()?;
+
+        match self.output.format {
+            crate::io::OutputPhyloFormat::Newick => write_newick(&mut writer, tree)?,
+        }
 
         Ok(())
     }

@@ -1,6 +1,6 @@
-// #![warn(clippy::all, clippy::pedantic, clippy::nursery, clippy::cargo)]
-// #![allow(clippy::missing_const_for_fn)]
-// #![allow(clippy::multiple_crate_versions)]
+#![warn(clippy::all, clippy::pedantic, clippy::nursery, clippy::cargo)]
+#![allow(clippy::missing_const_for_fn)]
+#![allow(clippy::multiple_crate_versions)]
 
 #[macro_use]
 extern crate serde;
@@ -22,18 +22,18 @@ mod tree;
 mod utils;
 
 use crate::clap::Clap;
-use crate::io::Output;
-use cli::{subcommands::Command, Opts};
+use cli::{
+    subcommands::{Command, Runner},
+    Opts,
+};
 
-use color_eyre::{eyre::Report, Help};
+use color_eyre::eyre::Report;
 use displaydoc::Display;
 use eyre::Context;
-use io::{get_reader, read_report_tree, report::ParseKrakenReport};
 use kraken::ReportRecord;
 use parser::parse_ident_organism_name;
 use thiserror::Error;
-use tracing::{debug, info, instrument};
-use tree::Tree;
+use tracing::instrument;
 
 #[derive(Display, Error, Debug)]
 #[non_exhaustive]
@@ -58,12 +58,12 @@ pub enum ErrorKind {
     NodeNotFound,
     /// parse output error
     ParseOutputPathError,
-    // ///IO error
-    // #[error(transparent)]
-    // Io(#[from] std::io::Error),
-    // ///CSV parser error
-    // #[error(transparent)]
-    // Csv(#[from] csv::Error)
+    /// input file is empty
+    EmptyFile,
+    /// IO error: `{0}`
+    Io(std::io::Error),
+    /// CSV parser error: `{0}`
+    CsvParser(csv::Error),
 }
 
 #[instrument]
@@ -74,68 +74,10 @@ fn main() -> Result<(), Report> {
     let opts: Opts = Opts::parse();
 
     match opts.command {
-        // Command::Tree(sub_opts) => {
-        //     info!("subcommand `tree`");
-        //     // TODO check all files exists, gather errors with eyre
-        //     // https://github.com/yaahc/color-eyre/blob/master/examples/multiple_errors.rs
-        //     for report in &sub_opts.files.reports {
-        //         let tree = read_report_tree(report, sub_opts.headers)?;
-        //         let output_path = get_output_file_name(report, &sub_opts.prefix);
-        //         info!("will write output to `{}`", &output_path.display());
-        //         write_tree(tree, &output_path, &sub_opts.format, sub_opts.overwrite)?;
-        //     }
-        // }
-        // Command::Info(info) => {
-        //     dbg!(info);
-        // }
-        // Command::Convert(convert) => {
-        //     dbg!(convert);
-        //     //     match convert.kind {
-        //     //     // cli::args::ExtractKind::Phylo => {
-        //     //     //     info!("convert phylo");
-        //     //     //     dbg!(&convert);
-        //     //     //     debug!("{:?}", &convert);
-        //     //     //     let tree = read_report_tree(&convert.file.report, false)?;
-        //     //     //     let mut writer = output.writer()?;
-        //     //     //     // write_tree(tree, &output_path, &sub_opts.format, sub_opts.overwrite)?;
-        //     //     // }
-        //     //     // cli::args::ExtractKind::Data => {
-        //     //     //     info!("convert data");
-        //     //     //     dbg!(convert);
-        //     //     // }
-        //     // }
-        // }
-        // Command::Merge(merge) => {
-        //     dbg!(merge);
-        // }
-        // Command::Track(track) => {
-        //     dbg!(track);
-        // }
         Command::ConvertPhylo(args) => {
-            args.run().wrap_err("Failed to convert taxonomy tree")?;
-            // dbg!(&args);
-            // debug!("checking if input file is readable");
-            // let input = args.input.path;
-            // let mut reader = get_reader(&input, false)
-            //     .wrap_err_with(|| format!("Failed to read file `{}`", &input.display()))?;
-
-            // debug!("checking if output file is writtable");
-            // let output = Output::from(args.output.file);
-            // output.try_writtable()?;
-
-            // debug!("reading tree");
-
-            // let tree: Tree = ParseKrakenReport::parse(&mut reader)
-            //     .wrap_err_with(|| format!("Failed to parse file `{}`", &input.display()))
-            //     .suggestion(
-            //         "Try using the `--has-headers` option if your Kraken report has headers",
-            //     )?;
-
-            // todo!()
+            args.run().wrap_err("failed to convert taxonomy tree")?;
         }
-        _ => {
-            dbg!("hello");
-        }
+        _ => todo!(),
     }
 
     Ok(())
