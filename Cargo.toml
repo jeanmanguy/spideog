@@ -40,6 +40,8 @@ exitcode = "1.1.2"
 
 [dev-dependencies]
 test-case = "1.0"
+assert_cmd = "0.10"
+predicates = "1"
 
 [lib]
 name = "libspideog"
