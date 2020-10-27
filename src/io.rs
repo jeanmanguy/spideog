@@ -43,7 +43,6 @@ impl SingleReport {
 }
 
 impl MultipleReports {
-    // TODO: I guess I am still doing something wrong, Location still points to eyre and not to my code
     fn join_errors(errors: Vec<Result<File, BinError>>) -> Result<(), Report> {
         if errors.is_empty() {
             return Ok(());
@@ -67,8 +66,7 @@ impl MultipleReports {
 
         MultipleReports::join_errors(errors)?;
 
-        let r: Vec<File> = ok.into_iter().map(Result::unwrap).collect();
-        Ok(r)
+        Ok(ok.into_iter().map(Result::unwrap).collect::<Vec<File>>())
     }
 }
 
