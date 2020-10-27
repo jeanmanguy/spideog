@@ -1,19 +1,34 @@
 use color_eyre::{eyre::Context, Help, Report};
 use core::convert::TryFrom;
 use csv::Reader;
+use libspideog::{
+    errors::SpideogError,
+    kraken::ReportRecord,
+    tree::{IndentOrganism, Tree},
+};
 use std::fs::File;
-
-use crate::{kraken::ReportRecord, tree::IndentOrganism, tree::Tree};
+use tracing::instrument;
 
 pub trait ParseKrakenReport: Sized {
     fn parse(reader: &mut Reader<File>) -> Result<Self, Report>;
 }
 
+fn parse_origin_tree(first_line: Option<Result<ReportRecord, csv::Error>>) -> Result<Tree, Report> {
+    let first_line = first_line.ok_or(SpideogError::EmptyFile)?;
+    let first_record: ReportRecord = first_line.map_err(SpideogError::CsvParser)?;
+    let origin = IndentOrganism::try_from(first_record)?;
+    let taxonomy_tree = Tree::new(origin);
+    Ok(taxonomy_tree)
+}
+
 impl ParseKrakenReport for Tree {
+    #[instrument]
     fn parse(reader: &mut Reader<File>) -> Result<Self, Report> {
-        let first_record: ReportRecord = reader.deserialize().next().unwrap()?;
-        let origin = IndentOrganism::try_from(first_record)?;
-        let mut taxonomy_tree = Self::new(origin);
+        let first_line = reader.deserialize().next();
+
+        let mut taxonomy_tree = parse_origin_tree(first_line)
+            .wrap_err("failed to parse first line")
+            .suggestion("make sure that the file is a Kraken2 report")?;
 
         for result in reader.deserialize() {
             let record: ReportRecord = result

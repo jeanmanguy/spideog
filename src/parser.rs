@@ -14,7 +14,7 @@ pub fn spaces_and_rest(input: &[u8]) -> IResult<&[u8], Vec<&[u8]>> {
 }
 
 pub fn parse_ident_organism_name(input: &[u8]) -> IResult<&[u8], (Indent, &[u8])> {
-    let (name, spaces) = spaces_and_rest(input).unwrap();
+    let (name, spaces) = spaces_and_rest(input)?;
 
     Ok((&[], (spaces.len(), name)))
 }
