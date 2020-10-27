@@ -1,4 +1,4 @@
-# 🐦 spideog - Command line utility for Kraken2 reports.
+# 🐦 spideog - Command line utility for Kraken2 reports. <!-- omit in toc -->
 
 ![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)
 ![lastest version](https://img.shields.io/github/v/release/jeanmanguy/spideog)
@@ -7,6 +7,14 @@
 [![Rust](https://github.com/jeanmanguy/spideog/workflows/Rust/badge.svg?branch=main)](https://github.com/jeanmanguy/spideog/actions?query=workflow%3ARust)
 
 This is a work in progress. The commands may change between released versions, please read the [CHANGELOG](CHANGELOG).
+
+- [Goals](#goals)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [`convert-phylo`](#convert-phylo)
+- [Contributing](#contributing)
+- [License](#license)
+- [Credits](#credits)
 
 ## Goals
 
@@ -25,30 +33,38 @@ Binaries for Linux, OSX, and Windows are available in the [Github release page](
 
 ```sh
 spideog --help
+spideog --version
+spideog convert-phylo <REPORT_FILE>
+spideog convert-abundance <REPORT_FILE>
+spideog merge-phylo <REPORT_FILE>...
+spideog merge-abundance <REPORT_FILE>...
 ```
 
-### `tree`
+Windows: you will need to add the `.exe` extension to the commands.
 
-Convert the taxonomy trees of kraken reports to newick format.
+### `convert-phylo`
 
-The following command will generate the files `sample_1.tree` and `sample_2.tree`.
+Convert the taxonomy trees of a kraken report to the newick format.
+
+The following command will generate the files `sample.tree`.
 
 ```sh
-spideog tree sample_1.kreport sample_2.kreport
+spideog convert-phylo --help
+spideog convert-phylo sample.kreport --output sample.tree
 ```
 
-#### Example files
+### Example files <!-- omit in toc -->
 
-- examplar kraken report: [tests/sample_data/sample.kreport](tests/sample_data/sample.kreport).
+- input: [tests/sample_data/sample.kreport](tests/sample_data/sample.kreport).
 - output: [tests/sample_data/sample.tree](tests/sample_data/sample.tree)
 
+#### Options <!-- omit in toc -->
 
-#### Options 
-
-- `--has_headers` necessary if the reports has headers
+- `--has_headers` necessary if the input report has headers
+- `--output` output file path
 - `--overwrite` force overwriting if the output file already exist
-- `--prefix` prepend the prefix to the name of the output file
-
+- `--report-format` input format (default: Kraken) [Only Kraken reports are supported at the moment]
+- `--format` output format (default: newick) [Only newick is supported at the moment]
 
 ## Contributing
 
@@ -62,6 +78,6 @@ Apache License (Version 2.0).
 See [LICENSE-APACHE](./LICENSE-APACHE) and [LICENSE-MIT](./LICENSE-MIT) for
 details.
 
-## Cover picture
+## Credits
 
-Credit: [Robin CC BY Greg Clarke](https://www.flickr.com/photos/leppre/25468458218)
+Cover picture: [Robin CC BY Greg Clarke](https://www.flickr.com/photos/leppre/25468458218)
