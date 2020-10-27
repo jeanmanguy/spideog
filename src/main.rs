@@ -5,6 +5,8 @@
 // #![allow(clippy::module_name_repetitions)]
 
 #[macro_use]
+extern crate eyre;
+#[macro_use]
 extern crate clap;
 #[macro_use]
 extern crate custom_derive;
@@ -15,6 +17,8 @@ mod cli;
 mod io;
 mod subcommands;
 mod utils;
+
+use std::path::PathBuf;
 
 use crate::clap::Clap;
 use cli::{
@@ -31,8 +35,14 @@ use tracing::instrument;
 #[derive(Display, Error, Debug)]
 #[non_exhaustive]
 pub enum BinError {
-    /// IO error: `{0}`
-    Io(std::io::Error),
+    /// IO error with `{path}`
+    Io {
+        #[source]
+        err: std::io::Error,
+        path: PathBuf,
+    },
+    /// encountered multiple errors
+    MultipleErrors,
 }
 
 #[instrument]
@@ -45,6 +55,9 @@ fn main() -> Result<(), Report> {
     match opts.command {
         Command::ConvertPhylo(args) => {
             args.run().wrap_err("failed to convert taxonomy tree")?;
+        }
+        Command::MergePhylo(args) => {
+            args.run().wrap_err("failed to merge taxonomy trees")?;
         }
         _ => todo!(),
     }

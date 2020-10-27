@@ -29,6 +29,7 @@ pub struct Opts {
 
 pub fn setup_error_hook() -> Result<(), Report> {
     color_eyre::config::HookBuilder::default()
+        .add_default_filters()
         .issue_url(concat!(env!("CARGO_PKG_REPOSITORY"), "/issues/new"))
         .add_issue_metadata("version", crate_version!())
         .add_issue_metadata("architecture", std::env::consts::ARCH)

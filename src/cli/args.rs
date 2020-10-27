@@ -53,6 +53,9 @@ pub struct MultipleReports {
     /// Input reports format (all reports must have the format)
     #[clap(long = "report-format", name = "report-format", arg_enum, case_insensitive(true), global(true), default_value("Kraken"))]
     pub format: crate::io::InputReportFormat,
+    /// Does the kraken reports have headers (all or none)
+    #[clap(long = "have-headers", takes_value(false))]
+    pub headers: bool
 }
 
 #[derive(Clap, Debug)]

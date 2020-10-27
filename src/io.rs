@@ -1,12 +1,15 @@
 use atty::Stream;
-use color_eyre::Report;
+use color_eyre::{Help, Report};
 use csv::Reader;
 use dialoguer::Confirm;
 use std::process;
 use std::{fs::File, fs::OpenOptions, io, path::PathBuf};
 use tracing::instrument;
 
-use crate::BinError;
+use crate::{
+    cli::args::{MultipleReports, SingleReport},
+    BinError,
+};
 
 pub mod newick;
 pub mod report;
@@ -31,15 +34,55 @@ pub fn get_reader(input: &PathBuf, headers: bool) -> Result<Reader<File>, csv::E
         .from_path(input)
 }
 
+impl SingleReport {
+    #[instrument]
+    pub fn open_report(&self) -> Result<File, BinError> {
+        let path = &self.path;
+        open_file(path)
+    }
+}
+
+impl MultipleReports {
+    // TODO: I guess I am still doing something wrong, Location still points to eyre and not to my code
+    fn join_errors(errors: Vec<Result<File, BinError>>) -> Result<(), Report> {
+        if errors.is_empty() {
+            return Ok(());
+        }
+
+        errors
+            .into_iter()
+            .filter(Result::is_err)
+            .map(Result::unwrap_err)
+            .fold(Err(eyre!("encountered multiple errors")), |report, e| {
+                report.error(e)
+            })
+    }
+
+    #[instrument]
+    pub fn open_reports(&self) -> Result<Vec<File>, Report> {
+        let readers: Vec<Result<File, BinError>> =
+            self.paths.iter().map(|p| open_file(p)).collect();
+
+        let (ok, errors) = readers.into_iter().partition(Result::is_ok);
+
+        MultipleReports::join_errors(errors)?;
+
+        let r: Vec<File> = ok.into_iter().map(Result::unwrap).collect();
+        Ok(r)
+    }
+}
+
 #[instrument]
-pub fn open_file(path: &PathBuf) -> Result<File, Report> {
-    let reader = OpenOptions::new()
+pub fn open_file(path: &PathBuf) -> Result<File, BinError> {
+    let path = path;
+    OpenOptions::new()
         .read(true)
         .write(false)
         .open(path)
-        .map_err(BinError::Io)?;
-
-    Ok(reader)
+        .map_err(|err| BinError::Io {
+            err,
+            path: path.clone(),
+        })
 }
 
 /* --------------------------------- OUTPUT --------------------------------- */
