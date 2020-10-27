@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - ReleaseDate
 
+### Added
+
+- prepare new commands 
+  - `convert-abundance`
+  - `merge-phylo`
+  - `merge-abundance`
+  - `track`
+  - `info`
+
+### Modified
+
+- changed `tree` to `convert-phylo`
+  - read only one file
+  - write only one file (default: stdout)
+- dev: split codebase between libspideog (src/lib.rs) and spideog (src/main.rs)
+- dev: other refactoring and improvements of the codebase
+
 ## [0.1.1] - 2020-10-24
 
 ### Added 
