@@ -58,7 +58,7 @@ pub struct MultipleReports {
     pub headers: bool
 }
 
-#[derive(Clap, Debug)]
+#[derive(Clap, Debug, Clone)]
 pub struct OutputFile {
     /// Output file [default: stdout (-)]
     #[clap(

@@ -101,16 +101,16 @@ custom_derive! {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum OutputKind {
     File(PathBuf),
     Stdout,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Output {
-    kind: OutputKind,
-    overwrite: bool,
+    pub kind: OutputKind,
+    pub overwrite: bool,
 }
 
 impl From<Option<PathBuf>> for OutputKind {

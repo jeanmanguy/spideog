@@ -169,12 +169,12 @@ mod tests {
     #[test_case("S", Rank::Species(0); "ok_S")]
     #[test_case("S1", Rank::Species(1); "ok_S1")]
     fn test_parse_tax_level(input: &str, expected: Rank) {
-        assert_eq!(parse_taxonomy_level(input).unwrap(), expected);
+        pretty_assertions::assert_eq!(parse_taxonomy_level(input).unwrap(), expected);
     }
 
     #[test]
     fn test_plus_one() {
-        assert_eq!(Rank::Kingdom(2).plus_one(), Rank::Kingdom(3))
+        pretty_assertions::assert_eq!(Rank::Kingdom(2).plus_one(), Rank::Kingdom(3))
     }
 
     #[test]

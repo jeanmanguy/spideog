@@ -15,12 +15,14 @@ pub enum SpideogError {
     LineParsingError(usize),
     /// node not found
     NodeNotFound,
+    /// edge not found
+    EdgeNotFound,
     /// parse output error
     ParseOutputPathError,
     /// input file is empty
     EmptyFile,
-    /// CSV parser error: `{0}`
-    CsvParser(csv::Error),
+    /// Kraken parser error
+    KrakenParser(#[source] csv::Error),
 }
 
 #[derive(Display, Error, Debug)]
