@@ -5,7 +5,7 @@ pub enum Command {
     // Info(Info),
     ConvertTree(ConvertTree),
     // ConvertAbundance(ConvertAbundance),
-    CombineTree(CombineTree),
+    CombineTrees(CombineTrees),
     // MergeAbundance(MergeAbundance),
     // Track(Track),
 }
@@ -53,7 +53,7 @@ pub struct ConvertAbundance {
 /// Combine multiple reports to one taxonomy tree
 #[derive(Clap, Debug)]
 #[clap(after_help = super::AFTER_HELP)]
-pub struct CombineTree {
+pub struct CombineTrees {
     #[clap(flatten)]
     pub input: MultipleReports,
     #[clap(flatten)]

@@ -3,13 +3,13 @@ use libspideog::{errors::SpideogError, tree::Tree};
 use tracing::instrument;
 
 use crate::{
-    cli::subcommands::{CombineTree, Runner},
+    cli::subcommands::{CombineTrees, Runner},
     io::{newick::write_newick, report::ParseKrakenReport, Output},
 };
 
 type VecResultTrees = Vec<Result<Tree, SpideogError>>;
 
-impl Runner for CombineTree {
+impl Runner for CombineTrees {
     #[instrument]
     fn run(self) -> Result<(), Report> {
         let readers = self.input.open_reports()?;

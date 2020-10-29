@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- command `combine-tree` 
+- command `combine-trees` 
   - read multiple Kraken reports
   - write one Newick taxonomy tree
 - second example Kraken report to test combining trees

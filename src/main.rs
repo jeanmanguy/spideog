@@ -56,7 +56,7 @@ fn main() -> Result<(), Report> {
         Command::ConvertTree(args) => {
             args.run().wrap_err("failed to convert taxonomy tree")?;
         }
-        Command::CombineTree(args) => {
+        Command::CombineTrees(args) => {
             args.run().wrap_err("failed to merge taxonomy trees")?;
         }
     }

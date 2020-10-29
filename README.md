@@ -12,7 +12,7 @@ This is a work in progress. The commands may change between released versions, p
 - [Installation](#installation)
 - [Usage](#usage)
   - [`convert-tree`](#convert-tree)
-  - [`combine-tree`](#combine-tree)
+  - [`combine-trees`](#combine-trees)
 - [Contributing](#contributing)
 - [License](#license)
 - [Credits](#credits)
@@ -61,14 +61,14 @@ spideog convert-tree sample.kreport --output converted.tree
 - `--report-format` input format (default: Kraken) [Only Kraken reports are supported at the moment]
 - `--format` output format (default: newick) [Only newick is supported at the moment]
 
-### `combine-tree`
+### `combine-trees`
 
 Combine and convert taxonomy trees from multiple Kraken report (e.g. from different samples of the same experiment) to the Newick format.
 
 The following command will generate the file `combined.tree`.
 
 ```sh
-spideog convert-tree sample.kreport sample_2.kreport --output combined.tree
+spideog convert-trees sample.kreport sample_2.kreport --output combined.tree
 ```
 
 ### Example files <!-- omit in toc -->
