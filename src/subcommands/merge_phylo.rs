@@ -7,6 +7,8 @@ use crate::{
     io::{newick::write_newick, report::ParseKrakenReport, Output},
 };
 
+type VecResultTrees = Vec<Result<Tree, SpideogError>>;
+
 impl Runner for CombineTree {
     #[instrument]
     fn run(self) -> Result<(), Report> {
@@ -14,10 +16,7 @@ impl Runner for CombineTree {
         let output = Output::from(self.output.file.clone());
         output.try_writtable()?;
 
-        let (ok_trees, errors_trees): (
-            Vec<Result<Tree, SpideogError>>,
-            Vec<Result<Tree, SpideogError>>,
-        ) = readers
+        let (ok_trees, errors_trees): (VecResultTrees, VecResultTrees) = readers
             .into_iter()
             .map(|r| -> Result<Tree, SpideogError> {
                 let mut csv_reader = csv::ReaderBuilder::new()
