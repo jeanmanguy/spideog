@@ -68,7 +68,7 @@ Combine and convert taxonomy trees from multiple Kraken report (e.g. from differ
 The following command will generate the file `combined.tree`.
 
 ```sh
-spideog convert-trees sample.kreport sample_2.kreport --output combined.tree
+spideog combine-trees sample.kreport sample_2.kreport --output combined.tree
 ```
 
 ### Example files <!-- omit in toc -->
