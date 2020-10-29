@@ -3,7 +3,7 @@ use core::convert::TryFrom;
 use std::fmt::Display;
 
 use daggy::{Dag, NodeIndex, Walker};
-use tracing::{info, instrument};
+use tracing::instrument;
 
 use crate::{
     errors::SpideogError,
@@ -25,7 +25,7 @@ impl Display for IndentOrganism {
 
 impl IndentOrganism {
     #[must_use]
-    pub const fn inferior_indent(&self, than: &Self) -> bool {
+    pub fn inferior_indent(&self, than: &Self) -> bool {
         self.indent < than.indent
     }
 }
@@ -66,18 +66,17 @@ pub struct Tree {
 impl Tree {
     #[must_use]
     pub fn new() -> Self {
-        let mut tree: Dag<IndentOrganism, u32, u32> = Dag::new();
-
         Self {
-            tree,
+            tree: Dag::new(),
             origin: None,
             last_node_added_id: None,
         }
     }
 
     pub fn with_origin(&mut self, origin: IndentOrganism) -> &mut Self {
-        self.origin = Some(self.tree.add_node(origin));
-        self.last_node_added_id = self.origin;
+        let new_node_index = self.tree.add_node(origin);
+        self.origin = Some(new_node_index);
+        self.last_node_added_id = Some(new_node_index);
 
         self
     }
@@ -87,7 +86,6 @@ impl Tree {
         self.child_with_weight(parent, node, weight)
     }
 
-    #[inline]
     pub fn child_with_weight(
         &mut self,
         parent: NodeIndex,
@@ -96,28 +94,52 @@ impl Tree {
     ) -> &mut Self {
         let (_, new_node_id) = self.tree.add_child(parent, weight, node);
         self.last_node_added_id = Some(new_node_id);
+
         self
     }
 
-    /// find a parent with a lower indent value or default to the origin
-    // TODO: make it a try function
-    #[must_use]
-    pub fn find_valid_parent_for(&self, organism: &IndentOrganism) -> NodeIndex {
-        let mut parent_id = self.origin.unwrap(); // default value // TODO: add error
-        let last_id = self.last_node_added_id.unwrap(); // TODO: add error
+    //  find a parent with a lower indent value or default to the origin
+    pub fn find_valid_parent_for(
+        &self,
+        organism: &IndentOrganism,
+    ) -> Result<NodeIndex, SpideogError> {
+        // default value
+        let mut parent_id = self
+            .origin
+            .ok_or_else(|| SpideogError::TreeNotInitialized)?;
+
+        let previously_added_node = self
+            .last_node_added_id
+            .ok_or_else(|| SpideogError::TreeNotInitialized)?;
+
+        if self
+            .tree
+            .node_weight(previously_added_node)
+            .ok_or_else(|| SpideogError::NodeNotFound)?
+            .inferior_indent(organism)
+        {
+            // previously added node is a suitable parent for the next organism
+            return Ok(previously_added_node);
+        }
+
+        // we need to go up the tree to find an adequate parent
         let mut parent_recursion = self
             .tree
-            .recursive_walk(last_id, |g, n| g.parents(n).iter(g).last());
+            .recursive_walk(previously_added_node, |g, n| g.parents(n).iter(g).last());
 
-        while let Some((_, id)) = parent_recursion.walk_next(&self.tree) {
-            let node = self.tree.node_weight(id).unwrap();
+        while let Some((_, node_id)) = parent_recursion.walk_next(&self.tree) {
+            let node = self
+                .tree
+                .node_weight(node_id)
+                .ok_or_else(|| SpideogError::NodeNotFound)?;
+
             if node.inferior_indent(organism) {
-                parent_id = id;
+                parent_id = node_id;
                 break;
             }
         }
 
-        parent_id
+        Ok(parent_id)
     }
 
     pub fn try_combine_with(mut self, rhs: Self) -> Result<Self, SpideogError> {
@@ -159,15 +181,18 @@ impl Tree {
                 (None, None) => {
                     // panic
                     // no common node (not even root)
-                    // FIXME: whattodo?
+                    // FIXME: what todo?
                     // TODO:  make it an error with more info
+                    // dbg!(&rhs_edge_source);
+                    // dbg!(&rhs_edge_target);
+                    // dbg!(self.tree.node_weight(self.origin.unwrap()));
                     panic!("source and target of an edge in RHS were not found in Self");
                 }
                 (None, Some(_)) => {
                     // panic
                     // possible diamond
                     panic!(
-                        "source an edge node in RHS were not found in Self, but target was found"
+                        "source and edge node in RHS were not found in Self, but target was found"
                     );
                 }
                 (Some(parent), None) => {
@@ -175,10 +200,14 @@ impl Tree {
                 }
                 (Some(s), Some(t)) => {
                     // increment weight of edge
-                    let original_edge = self
-                        .tree
-                        .find_edge(s, t)
-                        .ok_or_else(|| SpideogError::EdgeNotFound)?;
+                    // FIXME: some issues with different trees, can't found node that exist
+                    let original_edge = self.tree.find_edge(s, t).ok_or_else(|| {
+                        SpideogError::EdgeNotFound(
+                            self.tree.node_weight(s).unwrap().clone(),
+                            self.tree.node_weight(t).unwrap().clone(),
+                        )
+                    })?;
+
                     self.tree
                         .update_edge(
                             s,
@@ -244,14 +273,43 @@ mod tests {
             },
         };
 
+        let grand_child = IndentOrganism {
+            indent: 2,
+            organism: Organism {
+                taxonomy_level: crate::taxonomy::Rank::Root(1),
+                name: "grand child".to_string(),
+                taxonomy_id: 2,
+            },
+        };
+
         let mut tree = Tree::new();
         tree.with_origin(origin.clone());
         tree.child(NodeIndex::new(0), child.clone());
+        tree.child(NodeIndex::new(1), grand_child);
 
-        pretty_assertions::assert_eq!(tree.tree.edge_count(), 1);
-        pretty_assertions::assert_eq!(tree.tree.node_count(), 2);
+        pretty_assertions::assert_eq!(tree.tree.edge_count(), 2);
+        pretty_assertions::assert_eq!(tree.tree.node_count(), 3);
         pretty_assertions::assert_eq!(tree.tree.node_weight(NodeIndex::new(0)), Some(&origin));
         pretty_assertions::assert_eq!(tree.tree.node_weight(NodeIndex::new(1)), Some(&child));
+
+        assert!(tree
+            .tree
+            .find_edge(NodeIndex::new(0), NodeIndex::new(1))
+            .is_some());
+        assert!(tree
+            .tree
+            .find_edge(NodeIndex::new(1), NodeIndex::new(2))
+            .is_some());
+
+        pretty_assertions::assert_eq!(
+            tree.tree
+                .parents(NodeIndex::new(2))
+                .iter(&tree.tree)
+                .next()
+                .unwrap()
+                .1,
+            NodeIndex::new(1)
+        )
     }
 
     #[test]
@@ -278,7 +336,7 @@ mod tests {
             indent: 2,
             organism: Organism {
                 taxonomy_level: crate::taxonomy::Rank::Root(1),
-                name: "second child".to_string(),
+                name: "grand child".to_string(),
                 taxonomy_id: 2,
             },
         };
@@ -292,14 +350,29 @@ mod tests {
             },
         };
 
+        let new_child_child = IndentOrganism {
+            indent: 3,
+            organism: Organism {
+                taxonomy_level: crate::taxonomy::Rank::Root(3),
+                name: "new_child_child".to_string(),
+                taxonomy_id: 4,
+            },
+        };
+
         let mut tree = Tree::new();
         tree.with_origin(origin);
         tree.child(NodeIndex::new(0), child);
         tree.child(NodeIndex::new(1), grand_child);
 
-        let parent = tree.find_valid_parent_for(&new_child);
+        let parent = tree.find_valid_parent_for(&new_child).unwrap();
+        tree.child(parent, new_child);
 
-        pretty_assertions::assert_eq!(parent, NodeIndex::new(1));
+        // pretty_assertions::assert_eq!(parent, NodeIndex::new(1));
+
+        let parent = tree.find_valid_parent_for(&new_child_child).unwrap();
+        tree.child(parent, new_child_child);
+
+        pretty_assertions::assert_eq!(parent, NodeIndex::new(3));
     }
 
     #[test]

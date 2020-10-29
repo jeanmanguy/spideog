@@ -11,7 +11,7 @@ pub fn write_newick<W>(writer: &mut W, tree: &Tree) -> Result<(), Report>
 where
     W: std::io::Write,
 {
-    write_children_recursively(writer, &tree, tree.origin.unwrap(), 0)?; // TODO: add error / panic Tree not initilialised
+    write_children_recursively(writer, tree, tree.origin.unwrap(), 0)?; // TODO: add error / panic Tree not initilialised
     write_end(writer)?;
 
     Ok(())

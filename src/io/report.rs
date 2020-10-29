@@ -1,4 +1,3 @@
-use color_eyre::{eyre::Context, Help, Report};
 use core::convert::TryFrom;
 use csv::Reader;
 use libspideog::{
@@ -33,9 +32,8 @@ impl ParseKrakenReport for Tree {
 
         for result in reader.deserialize() {
             let record: ReportRecord = result.map_err(SpideogError::KrakenParser)?;
-
             let node = IndentOrganism::try_from(record)?;
-            let parent = taxonomy_tree.find_valid_parent_for(&node);
+            let parent = taxonomy_tree.find_valid_parent_for(&node)?;
             taxonomy_tree.child(parent, node);
         }
 

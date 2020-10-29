@@ -50,8 +50,13 @@ impl MultipleReports {
 
         errors
             .into_iter()
-            .filter(Result::is_err)
-            .map(Result::unwrap_err)
+            .filter_map(|result| {
+                if let Err(error) = result {
+                    Some(error)
+                } else {
+                    None
+                }
+            })
             .fold(Err(eyre!("encountered multiple errors")), |report, e| {
                 report.error(e)
             })
@@ -64,7 +69,7 @@ impl MultipleReports {
 
         let (ok, errors) = readers.into_iter().partition(Result::is_ok);
 
-        MultipleReports::join_errors(errors)?;
+        Self::join_errors(errors)?;
 
         Ok(ok.into_iter().map(Result::unwrap).collect::<Vec<File>>())
     }
@@ -156,8 +161,6 @@ impl Output {
                         ))
                     }?
                 }
-            } else {
-                log::debug!("Will create file `{}`", path.display());
             }
             Ok(())
         }

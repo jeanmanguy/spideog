@@ -1,13 +1,10 @@
-use std::{fs::File, path::PathBuf};
-
 use color_eyre::{Help, Report};
-use eyre::Context;
 use libspideog::{errors::SpideogError, tree::Tree};
 use tracing::instrument;
 
 use crate::{
     cli::subcommands::{MergePhylo, Runner},
-    io::{newick::write_newick, report::ParseKrakenReport, Output, OutputKind},
+    io::{newick::write_newick, report::ParseKrakenReport, Output},
 };
 
 impl Runner for MergePhylo {
@@ -39,8 +36,13 @@ impl Runner for MergePhylo {
         if !errors_trees.is_empty() {
             return errors_trees
                 .into_iter()
-                .filter(Result::is_err)
-                .map(Result::unwrap_err)
+                .filter_map(|result| {
+                    if let Err(error) = result {
+                        Some(error)
+                    } else {
+                        None
+                    }
+                })
                 .fold(Err(eyre!("encountered multiple errors")), |report, e| {
                     report.error(e)
                 });
@@ -48,8 +50,7 @@ impl Runner for MergePhylo {
 
         let mut trees_iter = ok_trees.into_iter().map(Result::unwrap);
 
-        let merged_tree =
-            trees_iter.try_fold(Tree::new(), |previous, new| previous.try_combine_with(new))?;
+        let merged_tree = trees_iter.try_fold(Tree::new(), Tree::try_combine_with)?;
 
         let mut writer = output.writer()?;
         match self.output.format {
