@@ -4,19 +4,17 @@ use libspideog::tree::Tree;
 use tracing::instrument;
 
 use crate::{
-    cli::subcommands::{ConvertPhylo, Runner},
+    cli::subcommands::{ConvertTree, Runner},
     io::newick::write_newick,
-    io::open_file,
     io::{report::ParseKrakenReport, Output},
 };
 
-impl Runner for ConvertPhylo {
+impl Runner for ConvertTree {
     #[instrument]
     fn run(self) -> Result<(), Report> {
         let input = &self.input.path;
 
-        let reader = open_file(input)
-            .wrap_err_with(|| format!("cannot read file `{}`", &input.display()))?;
+        let reader = self.input.open_report()?;
 
         let mut csv_reader = csv::ReaderBuilder::new()
             .has_headers(self.input.headers)

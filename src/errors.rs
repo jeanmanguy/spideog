@@ -1,4 +1,4 @@
-use crate::taxonomy::Rank;
+use crate::{taxonomy::Rank, tree::IndentOrganism};
 use displaydoc::Display;
 use thiserror::Error;
 
@@ -15,12 +15,18 @@ pub enum SpideogError {
     LineParsingError(usize),
     /// node not found
     NodeNotFound,
+    /// edge between `{0}` and `{1}` not found
+    EdgeNotFound(IndentOrganism, IndentOrganism),
     /// parse output error
     ParseOutputPathError,
     /// input file is empty
     EmptyFile,
-    /// CSV parser error: `{0}`
-    CsvParser(csv::Error),
+    /// Kraken parser error
+    KrakenParser(#[source] csv::Error),
+    /// taxonomy tree is not initialized
+    TreeNotInitialized,
+    /// failed to parse
+    KrakenIndentParsing(nom::error::ErrorKind),
 }
 
 #[derive(Display, Error, Debug)]

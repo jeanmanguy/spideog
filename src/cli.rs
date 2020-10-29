@@ -12,13 +12,11 @@ static AFTER_HELP: &str = "Thank you for using Spideog. Please send any feedback
 #[clap(global_setting = AppSettings::ColoredHelp)]
 #[clap(global_setting = AppSettings::ColorAuto)]
 #[clap(global_setting = AppSettings::DeriveDisplayOrder)]
-// #[clap(global_setting = AppSettings::VersionlessSubcommands)]
 #[clap(global_setting = AppSettings::DontCollapseArgsInUsage)]
 #[clap(global_setting = AppSettings::GlobalVersion)]
 #[clap(global_setting = AppSettings::ArgRequiredElseHelp)]
 #[clap(global_setting = AppSettings::HelpRequired)]
 #[clap(global_setting = AppSettings::UnifiedHelpMessage)]
-// #[clap(global_setting = AppSettings::SubcommandPrecedenceOverArg)]
 #[clap(after_help = AFTER_HELP)]
 pub struct Opts {
     #[clap(subcommand)]
@@ -29,6 +27,7 @@ pub struct Opts {
 
 pub fn setup_error_hook() -> Result<(), Report> {
     color_eyre::config::HookBuilder::default()
+        .add_default_filters()
         .issue_url(concat!(env!("CARGO_PKG_REPOSITORY"), "/issues/new"))
         .add_issue_metadata("version", crate_version!())
         .add_issue_metadata("architecture", std::env::consts::ARCH)

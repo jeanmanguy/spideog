@@ -2,12 +2,12 @@ use super::args::{MultipleReports, OutputAbundance, OutputPhylo, SingleReport};
 #[derive(Clap, Debug)]
 #[non_exhaustive]
 pub enum Command {
-    Info(Info),
-    ConvertPhylo(ConvertPhylo),
-    ConvertAbundance(ConvertAbundance),
-    MergePhylo(MergePhylo),
-    MergeAbundance(MergeAbundance),
-    Track(Track),
+    // Info(Info),
+    ConvertTree(ConvertTree),
+    // ConvertAbundance(ConvertAbundance),
+    CombineTrees(CombineTrees),
+    // MergeAbundance(MergeAbundance),
+    // Track(Track),
 }
 
 /// Extract diverse information about multiple reports
@@ -33,7 +33,7 @@ pub struct Track {
 /// Convert one report to one taxonomy tree
 #[derive(Clap, Debug)]
 #[clap(after_help = super::AFTER_HELP)]
-pub struct ConvertPhylo {
+pub struct ConvertTree {
     #[clap(flatten)]
     pub input: SingleReport,
     #[clap(flatten)]
@@ -50,10 +50,10 @@ pub struct ConvertAbundance {
     pub output: OutputAbundance,
 }
 
-/// Merge multiple reports to one taxonomy tree
+/// Combine multiple reports to one taxonomy tree
 #[derive(Clap, Debug)]
 #[clap(after_help = super::AFTER_HELP)]
-pub struct MergePhylo {
+pub struct CombineTrees {
     #[clap(flatten)]
     pub input: MultipleReports,
     #[clap(flatten)]

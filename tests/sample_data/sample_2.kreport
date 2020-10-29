@@ -1,0 +1,62 @@
+30.82	249	249	U	0	unclassified
+69.18	559	0	R	1	root
+61.01	493	0	R1	131567	  cellular organisms
+45.42	367	0	R2	2759	    Eukaryota
+37.13	300	0	K	33208	      Metazoa
+37.13	300	0	P	7711	        Chordata
+37.13	300	0	C	40674	          Mammalia
+37.13	300	0	C3	1437010	            Boreoeutheria
+24.75	200	0	C4	314146	              Euarchontoglires
+24.75	200	0	O	9443	                Primates
+24.75	200	0	F	9604	                  Hominidae
+24.75	200	0	G	9605	                    Homo
+24.75	200	200	S	9606	                      Homo sapiens
+12.38	100	0	C4	314145	              Laurasiatheria
+4.95	40	0	O	33554	                Carnivora
+4.95	40	0	F	9681	                  Felidae
+4.95	40	0	G	9682	                    Felis
+4.95	40	40	S	9685	                      Felis catus
+7.43	60	0	O	91561	                Artiodactyla
+7.43	60	0	F	9726	                  Delphinidae
+7.43	60	0	G	9738	                    Tursiops
+7.43	60	60	S	9739	                      Tursiops truncatus
+8.29	67	0	K	4751	      Fungi
+8.29	67	0	P	4890	        Ascomycota
+8.29	67	0	C	4891	          Saccharomycetes
+8.29	67	0	O	4892	            Saccharomycetales
+8.29	67	0	F	4893	              Saccharomycetaceae
+8.29	67	0	G	4930	                Saccharomyces
+1.24	10	10	S	4932	                  Saccharomyces cerevisiae
+1.86	15	15	S	114524	                  Saccharomyces kudriavzevii
+5.20	42	42	S	27292	                  Saccharomyces pastorianus
+14.11	114	0	D	2	    Bacteria
+9.90	80	0	P	1224	      Proteobacteria
+9.90	80	0	C	1236	        Gammaproteobacteria
+9.90	80	0	O	91347	          Enterobacterales
+9.90	80	0	F	543	            Enterobacteriaceae
+9.90	80	0	G	561	              Escherichia
+9.90	80	80	S	562	                Escherichia coli
+4.21	34	0	P	1239	      Firmicutes 
+4.21	34	0	C	91061	        Bacilli
+4.21	34	0	O	186826	          Lactobacillales 
+4.21	34	0	F	1300	            Streptococcaceae
+4.21	34	0	G	1357	              Lactococcus
+4.21	34	34	S	1358	                Lactococcus lactis
+1.49	12	0	D	2157	    Archaea
+1.49	12	0	P	28889	      Crenarchaeota 
+1.49	12	0	C	183924	        Thermoprotei 
+1.49	12	0	O	2266	          Thermoproteales 
+1.49	12	0	F	2267	            Thermoproteaceae 
+1.49	12	0	G	2276	              Pyrobaculum 
+1.49	12	12	S	70771	                Pyrobaculum neutrophilum
+8.17	66	0	D	10239	  Viruses
+8.17	66	0	K	2732396	    Orthornavirae
+8.17	66	0	P	2497569	      Negarnaviricota
+8.17	66	0	C	2497577	        Insthoviricetes
+8.17	66	0	O	2499411	          Articulavirales
+6.68	54	0	F	11308	            Orthomyxoviridae
+6.68	54	0	G	197912	              Betainfluenzavirus
+6.68	54	54	S	11520	                Influenza B virus
+1.49	12	0	F	2501949	            Amnoonviridae
+1.49	12	0	G	2034997	              Tilapinevirus
+1.49	12	12	S	2034996	                Tilapia tilapinevirus
