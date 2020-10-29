@@ -424,7 +424,7 @@ mod tests {
         tree_2.child(NodeIndex::new(1), grand_child.clone());
 
         let mut expected_tree = Tree::new();
-        expected_tree.with_origin(origin.clone());
+        expected_tree.with_origin(origin);
         expected_tree.child_with_weight(NodeIndex::new(0), child, 2);
         expected_tree.child(NodeIndex::new(0), second_child);
         expected_tree.child(NodeIndex::new(1), grand_child);

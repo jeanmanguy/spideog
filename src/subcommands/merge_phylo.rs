@@ -3,11 +3,11 @@ use libspideog::{errors::SpideogError, tree::Tree};
 use tracing::instrument;
 
 use crate::{
-    cli::subcommands::{MergePhylo, Runner},
+    cli::subcommands::{CombineTree, Runner},
     io::{newick::write_newick, report::ParseKrakenReport, Output},
 };
 
-impl Runner for MergePhylo {
+impl Runner for CombineTree {
     #[instrument]
     fn run(self) -> Result<(), Report> {
         let readers = self.input.open_reports()?;

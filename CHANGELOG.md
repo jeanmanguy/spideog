@@ -10,16 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- prepare new commands 
-  - `convert-abundance`
-  - `merge-phylo`
-  - `merge-abundance`
-  - `track`
-  - `info`
+- command `combine-tree` 
+  - read multiple Kraken reports
+  - write one Newick taxonomy tree
+- second example Kraken report to test combining trees
 
 ### Modified
 
-- changed `tree` to `convert-phylo`
+- changed `tree` to `convert-tree`
   - read only one file
   - write only one file (default: stdout)
 - dev: split codebase between libspideog (src/lib.rs) and spideog (src/main.rs)

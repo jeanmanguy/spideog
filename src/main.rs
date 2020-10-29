@@ -53,13 +53,12 @@ fn main() -> Result<(), Report> {
     let opts: Opts = Opts::parse();
 
     match opts.command {
-        Command::ConvertPhylo(args) => {
+        Command::ConvertTree(args) => {
             args.run().wrap_err("failed to convert taxonomy tree")?;
         }
-        Command::MergePhylo(args) => {
+        Command::CombineTree(args) => {
             args.run().wrap_err("failed to merge taxonomy trees")?;
         }
-        _ => todo!(),
     }
 
     Ok(())
