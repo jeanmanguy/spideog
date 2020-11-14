@@ -1,7 +1,7 @@
 use color_eyre::Report;
 use daggy::{NodeIndex, Walker};
 use eyre::ContextCompat;
-use libspideog::tree::Tree;
+use libspideog::data::tree::Tree;
 use std::io;
 use tracing::instrument;
 

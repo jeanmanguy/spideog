@@ -1,5 +1,5 @@
 use color_eyre::{Help, Report};
-use libspideog::{errors::SpideogError, tree::Tree};
+use libspideog::{data::tree::Tree, errors::SpideogError};
 use tracing::instrument;
 
 use crate::{
@@ -49,11 +49,11 @@ impl Runner for CombineTrees {
 
         let mut trees_iter = ok_trees.into_iter().map(Result::unwrap);
 
-        let merged_tree = trees_iter.try_fold(Tree::new(), Tree::try_combine_with)?;
+        let combined_tree = trees_iter.try_fold(Tree::new(), Tree::try_combine_with)?;
 
         let mut writer = output.writer()?;
         match self.output.format {
-            crate::io::OutputPhyloFormat::Newick => write_newick(&mut writer, &merged_tree)?,
+            crate::io::OutputPhyloFormat::Newick => write_newick(&mut writer, &combined_tree)?,
         }
 
         Ok(())

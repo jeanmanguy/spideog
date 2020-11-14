@@ -1,6 +1,6 @@
 use color_eyre::{Help, Report};
 use eyre::Context;
-use libspideog::tree::Tree;
+use libspideog::data::tree::Tree;
 use tracing::instrument;
 
 use crate::{
@@ -15,7 +15,6 @@ impl Runner for ConvertTree {
         let input = &self.input.path;
 
         let reader = self.input.open_report()?;
-
         let mut csv_reader = csv::ReaderBuilder::new()
             .has_headers(self.input.headers)
             .delimiter(b'\t')

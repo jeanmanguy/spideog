@@ -1,11 +1,12 @@
-use core::convert::TryFrom;
+use std::{convert::TryFrom, fs::File};
+
 use csv::Reader;
 use libspideog::{
+    data::abundance::AbundanceData,
+    data::tree::{IndentOrganism, Tree},
     errors::SpideogError,
-    kraken::ReportRecord,
-    tree::{IndentOrganism, Tree},
+    kraken::{Fragments, Organism, ReportRecord},
 };
-use std::fs::File;
 use tracing::instrument;
 
 pub trait ParseKrakenReport: Sized {
@@ -38,5 +39,21 @@ impl ParseKrakenReport for Tree {
         }
 
         Ok(taxonomy_tree)
+    }
+}
+
+impl ParseKrakenReport for AbundanceData {
+    #[instrument]
+    fn parse(reader: &mut Reader<File>) -> Result<Self, SpideogError> {
+        let mut data = AbundanceData::new();
+
+        for result in reader.deserialize() {
+            let record: ReportRecord = result.map_err(SpideogError::KrakenParser)?;
+            let organism = Organism::try_from(record.clone())?;
+            let fragments = Fragments::try_from(record)?;
+            data.insert(organism, fragments);
+        }
+
+        Ok(data)
     }
 }

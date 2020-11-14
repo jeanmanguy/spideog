@@ -1,4 +1,4 @@
-use crate::{taxonomy::Rank, tree::IndentOrganism};
+use crate::{data::tree::IndentOrganism, taxonomy::Rank};
 use displaydoc::Display;
 use thiserror::Error;
 
@@ -27,6 +27,8 @@ pub enum SpideogError {
     TreeNotInitialized,
     /// failed to parse
     KrakenIndentParsing(nom::error::ErrorKind),
+    /// other
+    Other,
 }
 
 #[derive(Display, Error, Debug)]

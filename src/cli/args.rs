@@ -1,5 +1,6 @@
-use clap::{Clap, ValueHint};
 use std::path::PathBuf;
+
+use clap::{Clap, ValueHint};
 
 // #[derive(Clap, Debug, Clone)]
 // pub struct KrakenReport {

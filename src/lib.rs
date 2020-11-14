@@ -5,11 +5,11 @@
 // #![allow(clippy::module_name_repetitions)]
 
 pub mod bracken;
+pub mod data;
 pub mod errors;
 pub mod kraken;
 pub mod parser;
 pub mod taxonomy;
-pub mod tree;
 
 #[macro_use]
 extern crate serde;
