@@ -1,7 +1,7 @@
 use color_eyre::Report;
 use csv::Writer;
 use eyre::Context;
-use libspideog::data::abundance::{AbundanceData, Samples, SamplesAbundanceData};
+use libspideog::data::abundance::{AbundanceData, Samples};
 use serde::Serialize;
 
 pub trait WriteAbundanceCsv: Sized {

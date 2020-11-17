@@ -1,7 +1,7 @@
 use color_eyre::{Help, Report};
 use eyre::Context;
 use libspideog::{
-    data::abundance::{AbundanceData, SampleName, Samples, SamplesAbundanceData},
+    data::abundance::{AbundanceData, SampleName, Samples},
     errors::SpideogError,
 };
 use std::iter::FromIterator;
@@ -26,8 +26,6 @@ impl Runner for CombineAbundance {
         let readers = self.input.open_reports()?;
         let output = Output::from(self.output.file.clone());
         output.try_writtable()?;
-
-        // TODO: get sample name from file, use it to loop
 
         let (ok_abundance_data, errors_abundance_data): (
             VecResultAbundanceData,
@@ -68,9 +66,9 @@ impl Runner for CombineAbundance {
 
         let mut samples = Samples::from_iter(ok_abundance_data.into_iter().map(Result::unwrap));
 
-        // if self.add_missing_taxons {
-        //     samples.add_missing_taxons();
-        // }
+        if self.add_missing_taxons {
+            samples.add_missing_taxons();
+        }
 
         let mut writer = output.writer()?;
         match self.output.format {

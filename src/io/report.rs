@@ -5,7 +5,7 @@ use libspideog::{
     data::abundance::AbundanceData,
     data::tree::{IndentOrganism, Tree},
     errors::SpideogError,
-    kraken::{Fragments, Organism, ReportRecord},
+    kraken::{Fragments, ReportRecord, Taxon},
 };
 use tracing::instrument;
 
@@ -49,7 +49,7 @@ impl ParseKrakenReport for AbundanceData {
 
         for result in reader.deserialize() {
             let record: ReportRecord = result.map_err(SpideogError::KrakenParser)?;
-            let organism = Organism::try_from(record.clone())?;
+            let organism = Taxon::try_from(record.clone())?;
             let fragments = Fragments::try_from(record)?;
             data.insert(organism, fragments);
         }

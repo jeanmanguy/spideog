@@ -7,14 +7,14 @@ use tracing::instrument;
 
 use crate::{
     errors::SpideogError,
-    kraken::{Organism, ReportRecord},
+    kraken::{ReportRecord, Taxon},
     parser::parse_ident_organism_name,
 };
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct IndentOrganism {
     pub indent: usize,
-    pub organism: Organism,
+    pub organism: Taxon,
 }
 
 impl Display for IndentOrganism {
@@ -37,7 +37,7 @@ impl TryFrom<ReportRecord> for IndentOrganism {
     fn try_from(value: ReportRecord) -> Result<Self, Self::Error> {
         let (_, (indent, name)) = parse_ident_organism_name(value.5.as_bytes()).unwrap(); // TODO: make error here
 
-        let organism_tree = Organism {
+        let organism_tree = Taxon {
             taxonomy_level: value.3,
             name: String::from_utf8_lossy(name).trim().to_string(),
             taxonomy_id: value.4,
@@ -236,7 +236,7 @@ mod tests {
     fn test_new() {
         let origin = IndentOrganism {
             indent: 0,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(0),
                 name: "root".to_string(),
                 taxonomy_id: 0,
@@ -257,7 +257,7 @@ mod tests {
     fn test_child() {
         let origin = IndentOrganism {
             indent: 0,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(0),
                 name: "root".to_string(),
                 taxonomy_id: 0,
@@ -266,7 +266,7 @@ mod tests {
 
         let child = IndentOrganism {
             indent: 0,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(1),
                 name: "child".to_string(),
                 taxonomy_id: 1,
@@ -275,7 +275,7 @@ mod tests {
 
         let grand_child = IndentOrganism {
             indent: 2,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(1),
                 name: "grand child".to_string(),
                 taxonomy_id: 2,
@@ -316,7 +316,7 @@ mod tests {
     fn test_find_valid_parent() {
         let origin = IndentOrganism {
             indent: 0,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(0),
                 name: "root".to_string(),
                 taxonomy_id: 0,
@@ -325,7 +325,7 @@ mod tests {
 
         let child = IndentOrganism {
             indent: 1,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(1),
                 name: "child".to_string(),
                 taxonomy_id: 1,
@@ -334,7 +334,7 @@ mod tests {
 
         let grand_child = IndentOrganism {
             indent: 2,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(1),
                 name: "grand child".to_string(),
                 taxonomy_id: 2,
@@ -343,7 +343,7 @@ mod tests {
 
         let new_child = IndentOrganism {
             indent: 2,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(3),
                 name: "new_child".to_string(),
                 taxonomy_id: 3,
@@ -352,7 +352,7 @@ mod tests {
 
         let new_child_child = IndentOrganism {
             indent: 3,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(3),
                 name: "new_child_child".to_string(),
                 taxonomy_id: 4,
@@ -379,7 +379,7 @@ mod tests {
     fn test_try_combine_with() {
         let origin = IndentOrganism {
             indent: 0,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(0),
                 name: "root".to_string(),
                 taxonomy_id: 0,
@@ -388,7 +388,7 @@ mod tests {
 
         let child = IndentOrganism {
             indent: 1,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(1),
                 name: "child".to_string(),
                 taxonomy_id: 1,
@@ -397,7 +397,7 @@ mod tests {
 
         let second_child = IndentOrganism {
             indent: 1,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(1),
                 name: "second child".to_string(),
                 taxonomy_id: 2,
@@ -406,7 +406,7 @@ mod tests {
 
         let grand_child = IndentOrganism {
             indent: 2,
-            organism: Organism {
+            organism: Taxon {
                 taxonomy_level: crate::taxonomy::Rank::Root(2),
                 name: "grand child".to_string(),
                 taxonomy_id: 3,

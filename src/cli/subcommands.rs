@@ -68,9 +68,9 @@ pub struct CombineAbundance {
     pub input: MultipleReports,
     #[clap(flatten)]
     pub output: OutputAbundance,
-    // /// add
-    // #[clap(long = "add-missing-taxons", takes_value(false))]
-    // pub add_missing_taxons: bool,
+    /// add missing taxons for each sample
+    #[clap(long = "add-missing-taxons", takes_value(false))]
+    pub add_missing_taxons: bool,
 }
 
 pub trait Runner {

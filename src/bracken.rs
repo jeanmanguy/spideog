@@ -1,4 +1,4 @@
-use crate::kraken::Organism;
+use crate::kraken::Taxon;
 
 #[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
 pub struct AbundanceValues {
@@ -10,7 +10,7 @@ pub struct AbundanceValues {
 #[derive(Clone, PartialEq, PartialOrd, Debug, Deserialize)]
 pub struct BrackenRecord {
     #[serde(flatten)]
-    pub organism: Organism,
+    pub organism: Taxon,
     #[serde(flatten)]
     pub abundance_values: AbundanceValues,
 }

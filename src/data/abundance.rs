@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 use std::iter::FromIterator;
 
-use crate::kraken::{Fragments, Organism};
+use crate::kraken::{Fragments, Taxon};
 
-pub type AbundanceData = HashMap<Organism, Fragments>;
+pub type AbundanceData = HashMap<Taxon, Fragments>;
 
 pub type SampleName = String;
 
@@ -11,6 +11,13 @@ pub type SampleName = String;
 pub struct SampleAbundance {
     pub name: SampleName,
     pub dataset: AbundanceData,
+}
+
+impl SampleAbundance {
+    #[must_use]
+    pub fn taxons(&self) -> Vec<Taxon> {
+        self.dataset.keys().cloned().collect()
+    }
 }
 
 impl From<(SampleName, AbundanceData)> for SampleAbundance {
@@ -27,10 +34,11 @@ pub type SamplesAbundanceData = Vec<SampleAbundance>; // FIXME remove
 #[derive(Debug, Default, PartialEq)]
 pub struct Samples {
     pub data: Vec<SampleAbundance>,
-    pub unique_taxons: Vec<Organism>,
+    pub unique_taxons: Vec<Taxon>,
 }
 
 impl Samples {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             data: Vec::new(),
@@ -39,13 +47,28 @@ impl Samples {
     }
 
     fn add(&mut self, elem: SampleAbundance) {
-        self.data.push(elem);
+        let new_taxons = elem.taxons();
 
-        // TODO: add missing taxon ids
+        for taxon in new_taxons {
+            if !self.unique_taxons.contains(&taxon) {
+                self.unique_taxons.push(taxon);
+            }
+        }
+
+        self.data.push(elem);
     }
 
     pub fn add_missing_taxons(&mut self) -> &mut Self {
-        todo!()
+        for datum in &mut self.data {
+            for taxon in &self.unique_taxons {
+                datum
+                    .dataset
+                    .entry(taxon.clone())
+                    .or_insert_with(Fragments::default);
+            }
+        }
+
+        self
     }
 }
 
