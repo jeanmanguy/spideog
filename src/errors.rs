@@ -25,8 +25,8 @@ pub enum SpideogError {
     KrakenParser(#[source] csv::Error),
     /// taxonomy tree is not initialized
     TreeNotInitialized,
-    /// failed to parse
-    KrakenIndentParsing(nom::error::ErrorKind),
+    /// failed to parse taxon name and identation
+    KrakenIndentParsing,
     /// other
     Other,
 }

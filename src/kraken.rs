@@ -30,7 +30,8 @@ impl TryFrom<ReportRecord> for Taxon {
 
     #[instrument]
     fn try_from(value: ReportRecord) -> Result<Self, Self::Error> {
-        let (_, (_, name)) = parse_ident_organism_name(value.5.as_bytes()).unwrap(); // TODO: make error here
+        let (_, (_, name)) = parse_ident_organism_name(value.5.as_bytes())
+            .map_err(|_e| SpideogError::KrakenIndentParsing)?;
 
         let organism = Self {
             taxonomy_level: value.3,

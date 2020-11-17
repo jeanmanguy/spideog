@@ -17,9 +17,7 @@ main() {
 
     test -f Cargo.lock || cargo generate-lockfile
 
-    # TODO Update this to build the artifacts that matter to you
     cross build --target $TARGET --release
-    # cross rustc --bin spideog --target $TARGET --release -- -C lto
     
     if [[ $TARGET == *"pc-windows"* ]]; then
         cp target/$TARGET/release/spideog.exe $stage/
