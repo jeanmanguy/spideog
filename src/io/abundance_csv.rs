@@ -49,17 +49,17 @@ struct RowSampleAbundanceData {
 
 impl WriteAbundanceCsv for AbundanceData {
     fn write_records<W: std::io::Write>(self, csv_writer: &mut Writer<W>) -> Result<(), Report> {
-        for (organism, abundance_data) in self {
+        for (taxon, abundance_data) in self {
             csv_writer
                 .serialize(RowAbundanceData {
-                    name: organism.name.clone(),
-                    taxonomy_id: organism.taxonomy_id,
-                    taxonomy_level: format!("{}", organism.taxonomy_level),
+                    name: taxon.name.clone(),
+                    taxonomy_id: taxon.taxonomy_id,
+                    taxonomy_level: format!("{}", taxon.taxonomy_level),
                     clade_percentage: abundance_data.clade_percentage,
                     clade_count_reads: abundance_data.clade_count_reads,
                     taxon_count_reads: abundance_data.taxon_count_reads,
                 })
-                .wrap_err_with(|| format!("failed to write record for `{}`", organism.name))?;
+                .wrap_err_with(|| format!("failed to write record for `{}`", taxon.name))?;
         }
 
         Ok(())
@@ -69,13 +69,13 @@ impl WriteAbundanceCsv for AbundanceData {
 impl WriteAbundanceCsv for Samples {
     fn write_records<W: std::io::Write>(self, csv_writer: &mut Writer<W>) -> Result<(), Report> {
         for sample in self.data {
-            for (organism, abundance_data) in &sample.dataset {
+            for (taxon, abundance_data) in &sample.dataset {
                 csv_writer
                     .serialize(RowSampleAbundanceData {
                         sample: sample.name.clone(),
-                        name: organism.name.clone(),
-                        taxonomy_id: organism.taxonomy_id,
-                        taxonomy_level: format!("{}", organism.taxonomy_level),
+                        name: taxon.name.clone(),
+                        taxonomy_id: taxon.taxonomy_id,
+                        taxonomy_level: format!("{}", taxon.taxonomy_level),
                         clade_percentage: abundance_data.clade_percentage,
                         clade_count_reads: abundance_data.clade_count_reads,
                         taxon_count_reads: abundance_data.taxon_count_reads,
@@ -83,7 +83,7 @@ impl WriteAbundanceCsv for Samples {
                     .wrap_err_with(|| {
                         format!(
                             "failed to write record for sample `{}` `{}`",
-                            sample.name, organism.name
+                            sample.name, taxon.name
                         )
                     })?;
             }

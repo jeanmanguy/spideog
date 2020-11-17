@@ -1,4 +1,4 @@
-use crate::{data::tree::IndentOrganism, taxonomy::Rank};
+use crate::{data::tree::IndentedTaxon, taxonomy::Rank};
 use displaydoc::Display;
 use thiserror::Error;
 
@@ -16,7 +16,7 @@ pub enum SpideogError {
     /// node not found
     NodeNotFound,
     /// edge between `{0}` and `{1}` not found
-    EdgeNotFound(IndentOrganism, IndentOrganism),
+    EdgeNotFound(IndentedTaxon, IndentedTaxon),
     /// parse output error
     ParseOutputPathError,
     /// input file is empty

@@ -10,7 +10,7 @@ pub struct AbundanceValues {
 #[derive(Clone, PartialEq, PartialOrd, Debug, Deserialize)]
 pub struct BrackenRecord {
     #[serde(flatten)]
-    pub organism: Taxon,
+    pub taxon: Taxon,
     #[serde(flatten)]
     pub abundance_values: AbundanceValues,
 }

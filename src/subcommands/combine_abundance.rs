@@ -8,13 +8,13 @@ use std::iter::FromIterator;
 use tracing::instrument;
 
 use crate::{
-    cli::subcommands::{CombineAbundance, Runner},
+    cli::subcommands::{CombineAbundances, Runner},
     io::{abundance_csv::WriteAbundanceCsv, report::ParseKrakenReport, Output},
 };
 
 type VecResultAbundanceData = Vec<Result<(SampleName, AbundanceData), SpideogError>>;
 
-impl Runner for CombineAbundance {
+impl Runner for CombineAbundances {
     #[instrument]
     fn run(self) -> Result<(), Report> {
         let sample_names: Vec<SampleName> = self

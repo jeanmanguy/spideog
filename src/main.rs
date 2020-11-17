@@ -60,7 +60,7 @@ fn main() -> Result<(), Report> {
             args.run()
                 .wrap_err("failed to convert taxonomy abundance data")?;
         }
-        Command::CombineAbundance(args) => {
+        Command::CombineAbundances(args) => {
             args.run().wrap_err("failed to combine abundance data")?;
         }
     }

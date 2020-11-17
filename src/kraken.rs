@@ -33,13 +33,13 @@ impl TryFrom<ReportRecord> for Taxon {
         let (_, (_, name)) = parse_ident_organism_name(value.5.as_bytes())
             .map_err(|_e| SpideogError::KrakenIndentParsing)?;
 
-        let organism = Self {
+        let taxon = Self {
             taxonomy_level: value.3,
             name: String::from_utf8_lossy(name).trim().to_string(),
             taxonomy_id: value.4,
         };
 
-        Ok(organism)
+        Ok(taxon)
     }
 }
 

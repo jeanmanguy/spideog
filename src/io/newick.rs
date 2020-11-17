@@ -97,7 +97,7 @@ where
         })?;
 
     if children.is_empty() {
-        write_name_distance(writer, &node_data.organism.name, distance)?;
+        write_name_distance(writer, &node_data.taxon.name, distance)?;
     } else {
         writer.write_all(b"(")?;
 
@@ -114,7 +114,7 @@ where
 
         writer.write_all(b")")?;
 
-        write_name_distance(writer, &node_data.organism.name, distance)?;
+        write_name_distance(writer, &node_data.taxon.name, distance)?;
     }
 
     Ok(())
