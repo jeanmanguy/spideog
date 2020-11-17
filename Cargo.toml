@@ -66,6 +66,7 @@ codegen-units = 1
 [package.metadata.release]
 disable-publish = true
 consolidate-commits = true
+no-dev-version = true
 
 [[package.metadata.release.pre-release-replacements]]
 file = "CHANGELOG.md"
