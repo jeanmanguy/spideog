@@ -16,7 +16,6 @@ extern crate enum_derive;
 mod cli;
 mod io;
 mod subcommands;
-mod utils;
 
 use crate::clap::Clap;
 use cli::{

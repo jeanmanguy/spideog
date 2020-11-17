@@ -2,10 +2,8 @@ use color_eyre::Report;
 use daggy::{NodeIndex, Walker};
 use eyre::ContextCompat;
 use libspideog::data::tree::Tree;
-use std::io;
+use std::{borrow::Cow, io};
 use tracing::instrument;
-
-use crate::utils::clean_name;
 
 pub fn write_newick<W>(writer: &mut W, tree: &Tree) -> Result<(), Report>
 where
@@ -43,6 +41,33 @@ where
 #[inline]
 fn format_end() -> String {
     String::from(";\n")
+}
+
+fn is_trouble(c: char) -> bool {
+    c == ' ' || c == '.' || c == ',' || c == '=' || c == '[' || c == ']' || c == '/' || c == ':'
+}
+
+// based from https://lise-henry.github.io/articles/optimising_strings.html
+// not going to use regex just for that
+pub fn clean_name<'a, S: Into<Cow<'a, str>>>(input: S) -> Cow<'a, str> {
+    let input = input.into();
+
+    let first_trouble_character = input.find(is_trouble);
+    if let Some(first_trouble_character) = first_trouble_character {
+        let mut output = String::from(&input[0..first_trouble_character]);
+        output.reserve(input.len() - first_trouble_character);
+        let rest = input[first_trouble_character..].chars();
+        for c in rest {
+            match c {
+                ' ' | '-' | '/' | ':' => output.push_str("_"),
+                '.' | ',' | '[' | ']' | '(' | ')' | '\'' | '\"' => {}
+                _ => output.push(c),
+            }
+        }
+        Cow::Owned(output)
+    } else {
+        input
+    }
 }
 
 pub fn write_children_recursively<W>(

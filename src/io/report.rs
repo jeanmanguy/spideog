@@ -45,7 +45,7 @@ impl ParseKrakenReport for Tree {
 impl ParseKrakenReport for AbundanceData {
     #[instrument]
     fn parse(reader: &mut Reader<File>) -> Result<Self, SpideogError> {
-        let mut data = AbundanceData::new();
+        let mut data = Self::new();
 
         for result in reader.deserialize() {
             let record: ReportRecord = result.map_err(SpideogError::KrakenParser)?;
