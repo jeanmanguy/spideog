@@ -11,6 +11,7 @@ use crate::{
     BinError,
 };
 
+pub mod abundance_csv;
 pub mod newick;
 pub mod report;
 

@@ -16,9 +16,6 @@ extern crate enum_derive;
 mod cli;
 mod io;
 mod subcommands;
-mod utils;
-
-use std::path::PathBuf;
 
 use crate::clap::Clap;
 use cli::{
@@ -39,7 +36,7 @@ pub enum BinError {
     Io {
         #[source]
         err: std::io::Error,
-        path: PathBuf,
+        path: std::path::PathBuf,
     },
     /// encountered multiple errors
     MultipleErrors,
@@ -57,7 +54,14 @@ fn main() -> Result<(), Report> {
             args.run().wrap_err("failed to convert taxonomy tree")?;
         }
         Command::CombineTrees(args) => {
-            args.run().wrap_err("failed to merge taxonomy trees")?;
+            args.run().wrap_err("failed to combine taxonomy trees")?;
+        }
+        Command::ConvertAbundance(args) => {
+            args.run()
+                .wrap_err("failed to convert taxonomy abundance data")?;
+        }
+        Command::CombineAbundances(args) => {
+            args.run().wrap_err("failed to combine abundance data")?;
         }
     }
 

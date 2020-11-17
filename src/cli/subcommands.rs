@@ -4,9 +4,9 @@ use super::args::{MultipleReports, OutputAbundance, OutputPhylo, SingleReport};
 pub enum Command {
     // Info(Info),
     ConvertTree(ConvertTree),
-    // ConvertAbundance(ConvertAbundance),
+    ConvertAbundance(ConvertAbundance),
     CombineTrees(CombineTrees),
-    // MergeAbundance(MergeAbundance),
+    CombineAbundances(CombineAbundances),
     // Track(Track),
 }
 
@@ -63,11 +63,14 @@ pub struct CombineTrees {
 /// Merge multiple reports to one abundance table
 #[derive(Clap, Debug)]
 #[clap(after_help = super::AFTER_HELP)]
-pub struct MergeAbundance {
+pub struct CombineAbundances {
     #[clap(flatten)]
     pub input: MultipleReports,
     #[clap(flatten)]
     pub output: OutputAbundance,
+    /// add missing taxons for each sample
+    #[clap(long = "add-missing-taxons", takes_value(false))]
+    pub add_missing_taxons: bool,
 }
 
 pub trait Runner {

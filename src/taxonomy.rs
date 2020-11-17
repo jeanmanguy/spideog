@@ -30,16 +30,16 @@ pub enum Rank {
 impl Display for Rank {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Unclassified(i) => write!(f, "U{}", i),
-            Self::Root(i) => write!(f, "R{}", i),
-            Self::Domain(i) => write!(f, "D{}", i),
-            Self::Kingdom(i) => write!(f, "K{}", i),
-            Self::Phylum(i) => write!(f, "P{}", i),
-            Self::Class(i) => write!(f, "C{}", i),
-            Self::Order(i) => write!(f, "O{}", i),
-            Self::Family(i) => write!(f, "F{}", i),
-            Self::Genus(i) => write!(f, "G{}", i),
-            Self::Species(i) => write!(f, "S{}", i),
+            Self::Unclassified(i) => write!(f, "Unclassified_{}", i),
+            Self::Root(i) => write!(f, "Root_{}", i),
+            Self::Domain(i) => write!(f, "Domain_{}", i),
+            Self::Kingdom(i) => write!(f, "Kingdom_{}", i),
+            Self::Phylum(i) => write!(f, "Phylum_{}", i),
+            Self::Class(i) => write!(f, "Class_{}", i),
+            Self::Order(i) => write!(f, "Order_{}", i),
+            Self::Family(i) => write!(f, "Family_{}", i),
+            Self::Genus(i) => write!(f, "Genus_{}", i),
+            Self::Species(i) => write!(f, "Species_{}", i),
         }
     }
 }

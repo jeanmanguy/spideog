@@ -1,11 +1,12 @@
-use core::convert::TryFrom;
+use std::{convert::TryFrom, fs::File};
+
 use csv::Reader;
 use libspideog::{
+    data::abundance::AbundanceData,
+    data::tree::{IndentedTaxon, Tree},
     errors::SpideogError,
-    kraken::ReportRecord,
-    tree::{IndentOrganism, Tree},
+    kraken::{Fragments, ReportRecord, Taxon},
 };
-use std::fs::File;
 use tracing::instrument;
 
 pub trait ParseKrakenReport: Sized {
@@ -17,7 +18,7 @@ fn parse_origin_tree(
 ) -> Result<Tree, SpideogError> {
     let first_line = first_line.ok_or(SpideogError::EmptyFile)?;
     let first_record: ReportRecord = first_line.map_err(SpideogError::KrakenParser)?;
-    let origin = IndentOrganism::try_from(first_record)?;
+    let origin = IndentedTaxon::try_from(first_record)?;
     let mut taxonomy_tree = Tree::new();
     taxonomy_tree.with_origin(origin);
     Ok(taxonomy_tree)
@@ -32,11 +33,27 @@ impl ParseKrakenReport for Tree {
 
         for result in reader.deserialize() {
             let record: ReportRecord = result.map_err(SpideogError::KrakenParser)?;
-            let node = IndentOrganism::try_from(record)?;
+            let node = IndentedTaxon::try_from(record)?;
             let parent = taxonomy_tree.find_valid_parent_for(&node)?;
             taxonomy_tree.child(parent, node);
         }
 
         Ok(taxonomy_tree)
+    }
+}
+
+impl ParseKrakenReport for AbundanceData {
+    #[instrument]
+    fn parse(reader: &mut Reader<File>) -> Result<Self, SpideogError> {
+        let mut data = Self::new();
+
+        for result in reader.deserialize() {
+            let record: ReportRecord = result.map_err(SpideogError::KrakenParser)?;
+            let taxon = Taxon::try_from(record.clone())?;
+            let fragments = Fragments::try_from(record)?;
+            data.insert(taxon, fragments);
+        }
+
+        Ok(data)
     }
 }

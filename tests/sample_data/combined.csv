@@ -1,0 +1,131 @@
+"sample","taxon","taxid","rank","clade_percentage","clade_count_reads","taxon_count_reads"
+"sample","Pyrobaculum",2276,"Genus_0",4.67,25,25
+"sample","Canis",9611,"Genus_0",1.87,10,10
+"sample","Saccharomyces cerevisiae",4932,"Species_0",7.85,42,42
+"sample","Tursiops truncatus",9739,"Species_0",22.43,120,120
+"sample","Fungi",4751,"Kingdom_0",7.85,42,42
+"sample","Saccharomycetaceae",4893,"Family_0",7.85,42,42
+"sample","Thermoproteaceae",2267,"Family_0",4.67,25,25
+"sample","Amnoonviridae",2501949,"Family_0",0.0,0,0
+"sample","Viruses",10239,"Domain_0",0.0,0,0
+"sample","Artiodactyla",91561,"Order_0",22.43,120,120
+"sample","Chordata",7711,"Phylum_0",33.64,180,180
+"sample","Primates",9443,"Order_0",9.35,50,50
+"sample","Enterobacteriaceae",543,"Family_0",5.61,30,30
+"sample","root",1,"Root_0",66.36,355,355
+"sample","Saccharomycetes",4891,"Class_0",7.85,42,42
+"sample","Thermoprotei",183924,"Class_0",4.67,25,25
+"sample","unclassified",0,"Unclassified_0",33.64,180,180
+"sample","Saccharomyces",4930,"Genus_0",7.85,42,42
+"sample","Euarchontoglires",314146,"Class_4",9.35,50,50
+"sample","Saccharomyces kudriavzevii",114524,"Species_0",0.0,0,0
+"sample","Carnivora",33554,"Order_0",1.87,10,10
+"sample","Influenza B virus",11520,"Species_0",0.0,0,0
+"sample","Canidae",9608,"Family_0",1.87,10,10
+"sample","Lactobacillales",186826,"Order_0",14.58,78,78
+"sample","Thermoproteales",2266,"Order_0",4.67,25,25
+"sample","Archaea",2157,"Domain_0",4.67,25,25
+"sample","Tilapia tilapinevirus",2034996,"Species_0",0.0,0,0
+"sample","Laurasiatheria",314145,"Class_4",24.3,130,130
+"sample","Escherichia",561,"Genus_0",5.61,30,30
+"sample","Homo",9605,"Genus_0",9.35,50,50
+"sample","Saccharomycetales",4892,"Order_0",7.85,42,42
+"sample","Felidae",9681,"Family_0",0.0,0,0
+"sample","Proteobacteria",1224,"Phylum_0",5.61,30,30
+"sample","Boreoeutheria",1437010,"Class_3",33.64,180,180
+"sample","Bacteria",2,"Domain_0",20.19,108,108
+"sample","Betainfluenzavirus",197912,"Genus_0",0.0,0,0
+"sample","Orthomyxoviridae",11308,"Family_0",0.0,0,0
+"sample","Enterobacterales",91347,"Order_0",5.61,30,30
+"sample","Delphinidae",9726,"Family_0",22.43,120,120
+"sample","Mammalia",40674,"Class_0",33.64,180,180
+"sample","Articulavirales",2499411,"Order_0",0.0,0,0
+"sample","Saccharomyces pastorianus",27292,"Species_0",0.0,0,0
+"sample","Felis",9682,"Genus_0",0.0,0,0
+"sample","Pyrobaculum neutrophilum",70771,"Species_0",4.67,25,25
+"sample","Eukaryota",2759,"Root_2",41.5,222,222
+"sample","Insthoviricetes",2497577,"Class_0",0.0,0,0
+"sample","Metazoa",33208,"Kingdom_0",33.64,180,180
+"sample","Homo sapiens",9606,"Species_0",9.35,50,50
+"sample","Ascomycota",4890,"Phylum_0",7.85,42,42
+"sample","Escherichia coli",562,"Species_0",5.61,30,30
+"sample","Negarnaviricota",2497569,"Phylum_0",0.0,0,0
+"sample","Orthornavirae",2732396,"Kingdom_0",0.0,0,0
+"sample","Tilapinevirus",2034997,"Genus_0",0.0,0,0
+"sample","Crenarchaeota",28889,"Phylum_0",4.67,25,25
+"sample","Bacilli",91061,"Class_0",14.58,78,78
+"sample","Streptococcaceae",1300,"Family_0",14.58,78,78
+"sample","Hominidae",9604,"Family_0",9.35,50,50
+"sample","Canis lupus",9612,"Species_0",1.87,10,10
+"sample","Tursiops",9738,"Genus_0",22.43,120,120
+"sample","Lactococcus",1357,"Genus_0",14.58,78,78
+"sample","Felis catus",9685,"Species_0",0.0,0,0
+"sample","Firmicutes",1239,"Phylum_0",14.58,78,78
+"sample","Gammaproteobacteria",1236,"Class_0",5.61,30,30
+"sample","cellular organisms",131567,"Root_1",66.36,355,355
+"sample","Lactococcus lactis",1358,"Species_0",14.58,78,78
+"sample_2","Saccharomyces",4930,"Genus_0",8.29,67,67
+"sample_2","Ascomycota",4890,"Phylum_0",8.29,67,67
+"sample_2","Felis catus",9685,"Species_0",4.95,40,40
+"sample_2","Euarchontoglires",314146,"Class_4",24.75,200,200
+"sample_2","Tilapinevirus",2034997,"Genus_0",1.49,12,12
+"sample_2","Homo sapiens",9606,"Species_0",24.75,200,200
+"sample_2","Tilapia tilapinevirus",2034996,"Species_0",1.49,12,12
+"sample_2","Pyrobaculum",2276,"Genus_0",1.49,12,12
+"sample_2","Streptococcaceae",1300,"Family_0",4.21,34,34
+"sample_2","Escherichia",561,"Genus_0",9.9,80,80
+"sample_2","Laurasiatheria",314145,"Class_4",12.38,100,100
+"sample_2","Betainfluenzavirus",197912,"Genus_0",6.68,54,54
+"sample_2","Proteobacteria",1224,"Phylum_0",9.9,80,80
+"sample_2","Enterobacterales",91347,"Order_0",9.9,80,80
+"sample_2","unclassified",0,"Unclassified_0",30.82,249,249
+"sample_2","Canis",9611,"Genus_0",0.0,0,0
+"sample_2","Delphinidae",9726,"Family_0",7.43,60,60
+"sample_2","Insthoviricetes",2497577,"Class_0",8.17,66,66
+"sample_2","Pyrobaculum neutrophilum",70771,"Species_0",1.49,12,12
+"sample_2","Bacilli",91061,"Class_0",4.21,34,34
+"sample_2","Amnoonviridae",2501949,"Family_0",1.49,12,12
+"sample_2","Mammalia",40674,"Class_0",37.13,300,300
+"sample_2","Tursiops truncatus",9739,"Species_0",7.43,60,60
+"sample_2","Lactococcus lactis",1358,"Species_0",4.21,34,34
+"sample_2","Homo",9605,"Genus_0",24.75,200,200
+"sample_2","Viruses",10239,"Domain_0",8.17,66,66
+"sample_2","root",1,"Root_0",69.18,559,559
+"sample_2","Bacteria",2,"Domain_0",14.11,114,114
+"sample_2","Thermoproteaceae",2267,"Family_0",1.49,12,12
+"sample_2","Articulavirales",2499411,"Order_0",8.17,66,66
+"sample_2","Artiodactyla",91561,"Order_0",7.43,60,60
+"sample_2","Thermoprotei",183924,"Class_0",1.49,12,12
+"sample_2","Saccharomycetes",4891,"Class_0",8.29,67,67
+"sample_2","Thermoproteales",2266,"Order_0",1.49,12,12
+"sample_2","Saccharomyces pastorianus",27292,"Species_0",5.2,42,42
+"sample_2","cellular organisms",131567,"Root_1",61.01,493,493
+"sample_2","Archaea",2157,"Domain_0",1.49,12,12
+"sample_2","Escherichia coli",562,"Species_0",9.9,80,80
+"sample_2","Carnivora",33554,"Order_0",4.95,40,40
+"sample_2","Felidae",9681,"Family_0",4.95,40,40
+"sample_2","Canidae",9608,"Family_0",0.0,0,0
+"sample_2","Boreoeutheria",1437010,"Class_3",37.13,300,300
+"sample_2","Chordata",7711,"Phylum_0",37.13,300,300
+"sample_2","Felis",9682,"Genus_0",4.95,40,40
+"sample_2","Negarnaviricota",2497569,"Phylum_0",8.17,66,66
+"sample_2","Saccharomyces cerevisiae",4932,"Species_0",1.24,10,10
+"sample_2","Saccharomyces kudriavzevii",114524,"Species_0",1.86,15,15
+"sample_2","Orthomyxoviridae",11308,"Family_0",6.68,54,54
+"sample_2","Fungi",4751,"Kingdom_0",8.29,67,67
+"sample_2","Gammaproteobacteria",1236,"Class_0",9.9,80,80
+"sample_2","Lactobacillales",186826,"Order_0",4.21,34,34
+"sample_2","Tursiops",9738,"Genus_0",7.43,60,60
+"sample_2","Saccharomycetales",4892,"Order_0",8.29,67,67
+"sample_2","Hominidae",9604,"Family_0",24.75,200,200
+"sample_2","Lactococcus",1357,"Genus_0",4.21,34,34
+"sample_2","Orthornavirae",2732396,"Kingdom_0",8.17,66,66
+"sample_2","Eukaryota",2759,"Root_2",45.42,367,367
+"sample_2","Influenza B virus",11520,"Species_0",6.68,54,54
+"sample_2","Enterobacteriaceae",543,"Family_0",9.9,80,80
+"sample_2","Primates",9443,"Order_0",24.75,200,200
+"sample_2","Metazoa",33208,"Kingdom_0",37.13,300,300
+"sample_2","Crenarchaeota",28889,"Phylum_0",1.49,12,12
+"sample_2","Firmicutes",1239,"Phylum_0",4.21,34,34
+"sample_2","Canis lupus",9612,"Species_0",0.0,0,0
+"sample_2","Saccharomycetaceae",4893,"Family_0",8.29,67,67

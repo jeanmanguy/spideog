@@ -1,6 +1,5 @@
 # 🐦 spideog - Command line utility for Kraken2 reports. <!-- omit in toc -->
 
-![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)
 [![lastest version](https://img.shields.io/github/v/release/jeanmanguy/spideog)](https://github.com/jeanmanguy/spideog/releases/tag/v0.1.2-alpha.1)
 
 [![Build Status](https://travis-ci.com/jeanmanguy/spideog.svg?branch=main)](https://travis-ci.com/jeanmanguy/spideog)
@@ -12,7 +11,9 @@ This is a work in progress. The commands may change between released versions, p
 - [Installation](#installation)
 - [Usage](#usage)
   - [`convert-tree`](#convert-tree)
+  - [`convert-abundance`](#convert-abundance)
   - [`combine-trees`](#combine-trees)
+  - [`combine-abundances`](#combine-abundances)
 - [Contributing](#contributing)
 - [License](#license)
 - [Credits](#credits)
@@ -33,7 +34,9 @@ Binaries for Linux, OSX, and Windows are available in the [Github release page](
 spideog --help
 spideog --version
 spideog convert-tree <REPORT_FILE>
-spideog combine-tree <REPORT_FILE>...
+spideog convert-abundance <REPORT_FILE>
+spideog combine-trees <REPORT_FILE>...
+spideog combine-abundances <REPORT_FILE>...
 ```
 
 Windows: you will need to add the `.exe` extension to the commands.
@@ -42,7 +45,7 @@ Windows: you will need to add the `.exe` extension to the commands.
 
 Convert the taxonomy tree of a Kraken report to the Newick format.
 
-The following command will generate the file `sample.tree`.
+The following command will generate the file `converted.tree`.
 
 ```sh
 spideog convert-tree sample.kreport --output converted.tree
@@ -55,11 +58,37 @@ spideog convert-tree sample.kreport --output converted.tree
 
 #### Options <!-- omit in toc -->
 
-- `--has_headers` necessary if the input report has headers
+- `--has-headers` necessary if the input report has headers
 - `--output` output file path
 - `--overwrite` force overwriting if the output file already exist
 - `--report-format` input format (default: Kraken) [Only Kraken reports are supported at the moment]
 - `--format` output format (default: newick) [Only newick is supported at the moment]
+
+### `convert-abundance`
+
+Convert the abundance data of a Kraken report to the CSV format.
+
+
+The following command will generate the file `converted.csv`.
+
+```sh
+spideog convert-abundance sample.kreport --output converted.csv
+```
+
+
+### Example files <!-- omit in toc -->
+
+- input: [tests/sample_data/sample.kreport](tests/sample_data/sample.kreport).
+- output: [tests/sample_data/converted.csv](tests/sample_data/converted.csv)
+
+#### Options <!-- omit in toc -->
+
+- `--has-headers` necessary if the input report has headers
+- `--output` output file path
+- `--overwrite` force overwriting if the output file already exist
+- `--report-format` input format (default: Kraken) [Only Kraken reports are supported at the moment]
+- `--format` output format (default: CSV) [Only CSV is supported at the moment]
+
 
 ### `combine-trees`
 
@@ -78,11 +107,37 @@ spideog combine-trees sample.kreport sample_2.kreport --output combined.tree
 
 #### Options <!-- omit in toc -->
 
-- `--has_headers` necessary if the input reports have headers
+- `--has-headers` necessary if the input reports have headers
 - `--output` output file path
 - `--overwrite` force overwriting if the output file already exist
 - `--report-format` input format (default: Kraken) [Only Kraken reports are supported at the moment]
 - `--format` output format (default: newick) [Only newick is supported at the moment]
+
+
+### `combine-abundances`
+
+Combine and convert abundance data from multiple Kraken report (e.g. from different samples of the same experiment) to the CSV format.
+
+The following command will generate the file `combined.csv`.
+
+```sh
+spideog combine-abundances sample.kreport sample_2.kreport --add-missing-taxons --output combined.csv
+```
+
+### Example files <!-- omit in toc -->
+
+- inputs: [tests/sample_data/sample.kreport](tests/sample_data/sample.kreport) and [tests/sample_data/sample_2.kreport](tests/sample_data/sample_2.kreport).
+- output: [tests/sample_data/combined.csv](tests/sample_data/combined.csv)
+
+
+#### Options <!-- omit in toc -->
+
+- `--add-missing-taxons` add missig taxons in some reports but present in other with zero values
+- `--has-headers` necessary if the input report has headers
+- `--output` output file path
+- `--overwrite` force overwriting if the output file already exist
+- `--report-format` input format (default: Kraken) [Only Kraken reports are supported at the moment]
+- `--format` output format (default: CSV) [Only CSV is supported at the moment]
 
 
 ## Contributing

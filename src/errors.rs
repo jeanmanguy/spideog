@@ -1,4 +1,4 @@
-use crate::{taxonomy::Rank, tree::IndentOrganism};
+use crate::{data::tree::IndentedTaxon, taxonomy::Rank};
 use displaydoc::Display;
 use thiserror::Error;
 
@@ -16,7 +16,7 @@ pub enum SpideogError {
     /// node not found
     NodeNotFound,
     /// edge between `{0}` and `{1}` not found
-    EdgeNotFound(IndentOrganism, IndentOrganism),
+    EdgeNotFound(IndentedTaxon, IndentedTaxon),
     /// parse output error
     ParseOutputPathError,
     /// input file is empty
@@ -25,8 +25,10 @@ pub enum SpideogError {
     KrakenParser(#[source] csv::Error),
     /// taxonomy tree is not initialized
     TreeNotInitialized,
-    /// failed to parse
-    KrakenIndentParsing(nom::error::ErrorKind),
+    /// failed to parse taxon name and identation
+    KrakenIndentParsing,
+    /// other
+    Other,
 }
 
 #[derive(Display, Error, Debug)]

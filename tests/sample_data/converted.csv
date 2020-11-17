@@ -1,0 +1,50 @@
+"taxon","taxid","rank","clade_percentage","clade_count_reads","taxon_count_reads"
+"Thermoproteales",2266,"Order_0",4.67,25,25
+"Homo",9605,"Genus_0",9.35,50,50
+"Laurasiatheria",314145,"Class_4",24.3,130,130
+"Artiodactyla",91561,"Order_0",22.43,120,120
+"Delphinidae",9726,"Family_0",22.43,120,120
+"Canidae",9608,"Family_0",1.87,10,10
+"Ascomycota",4890,"Phylum_0",7.85,42,42
+"Proteobacteria",1224,"Phylum_0",5.61,30,30
+"Tursiops",9738,"Genus_0",22.43,120,120
+"Enterobacterales",91347,"Order_0",5.61,30,30
+"Carnivora",33554,"Order_0",1.87,10,10
+"Fungi",4751,"Kingdom_0",7.85,42,42
+"Homo sapiens",9606,"Species_0",9.35,50,50
+"Chordata",7711,"Phylum_0",33.64,180,180
+"Lactococcus lactis",1358,"Species_0",14.58,78,78
+"Pyrobaculum",2276,"Genus_0",4.67,25,25
+"Archaea",2157,"Domain_0",4.67,25,25
+"Euarchontoglires",314146,"Class_4",9.35,50,50
+"Tursiops truncatus",9739,"Species_0",22.43,120,120
+"Primates",9443,"Order_0",9.35,50,50
+"Bacteria",2,"Domain_0",20.19,108,108
+"Saccharomycetaceae",4893,"Family_0",7.85,42,42
+"Thermoprotei",183924,"Class_0",4.67,25,25
+"Bacilli",91061,"Class_0",14.58,78,78
+"Thermoproteaceae",2267,"Family_0",4.67,25,25
+"Saccharomycetales",4892,"Order_0",7.85,42,42
+"Crenarchaeota",28889,"Phylum_0",4.67,25,25
+"unclassified",0,"Unclassified_0",33.64,180,180
+"Hominidae",9604,"Family_0",9.35,50,50
+"Gammaproteobacteria",1236,"Class_0",5.61,30,30
+"Lactococcus",1357,"Genus_0",14.58,78,78
+"Eukaryota",2759,"Root_2",41.5,222,222
+"cellular organisms",131567,"Root_1",66.36,355,355
+"Saccharomyces",4930,"Genus_0",7.85,42,42
+"Canis",9611,"Genus_0",1.87,10,10
+"Pyrobaculum neutrophilum",70771,"Species_0",4.67,25,25
+"Lactobacillales",186826,"Order_0",14.58,78,78
+"root",1,"Root_0",66.36,355,355
+"Canis lupus",9612,"Species_0",1.87,10,10
+"Enterobacteriaceae",543,"Family_0",5.61,30,30
+"Escherichia",561,"Genus_0",5.61,30,30
+"Mammalia",40674,"Class_0",33.64,180,180
+"Saccharomyces cerevisiae",4932,"Species_0",7.85,42,42
+"Saccharomycetes",4891,"Class_0",7.85,42,42
+"Boreoeutheria",1437010,"Class_3",33.64,180,180
+"Metazoa",33208,"Kingdom_0",33.64,180,180
+"Escherichia coli",562,"Species_0",5.61,30,30
+"Streptococcaceae",1300,"Family_0",14.58,78,78
+"Firmicutes",1239,"Phylum_0",14.58,78,78

@@ -1,21 +1,21 @@
 use color_eyre::{Help, Report};
+use csv::ReaderBuilder;
 use eyre::Context;
-use libspideog::data::tree::Tree;
+use libspideog::data::abundance::AbundanceData;
 use tracing::instrument;
 
 use crate::{
-    cli::subcommands::{ConvertTree, Runner},
-    io::newick::write_newick,
-    io::{report::ParseKrakenReport, Output},
+    cli::subcommands::{ConvertAbundance, Runner},
+    io::{abundance_csv::WriteAbundanceCsv, report::ParseKrakenReport, Output},
 };
 
-impl Runner for ConvertTree {
+impl Runner for ConvertAbundance {
     #[instrument]
     fn run(self) -> Result<(), Report> {
         let input = &self.input.path;
 
         let reader = self.input.open_report()?;
-        let mut csv_reader = csv::ReaderBuilder::new()
+        let mut csv_reader = ReaderBuilder::new()
             .has_headers(self.input.headers)
             .delimiter(b'\t')
             .double_quote(false)
@@ -25,14 +25,17 @@ impl Runner for ConvertTree {
         let output = Output::from(self.output.file);
         output.try_writtable()?;
 
-        let tree: Tree = ParseKrakenReport::parse(&mut csv_reader)
+        let data: AbundanceData = AbundanceData::parse(&mut csv_reader)
             .wrap_err_with(|| format!("failed to parse file `{}`", &input.display()))
             .suggestion("try using the `--has-headers` option if your Kraken report has headers")?;
 
         let mut writer = output.writer()?;
 
         match self.output.format {
-            crate::io::OutputPhyloFormat::Newick => write_newick(&mut writer, &tree)?,
+            crate::io::OutputAbundanceFormat::Csv => {
+                data.write_csv(&mut writer)
+                    .wrap_err("failed to write output to CSV")?;
+            }
         }
 
         Ok(())
